@@ -8,10 +8,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 public class Javino {
-	private final String version = staticversion;
-	private static final String staticversion = "stable 1.1";
+	private final String version = staticVersion;
+	private static final String staticVersion = "1.2";
 	private String pythonPlataform;
-	private String finalymsg = null;
+	private String finalMsg = null;
 
 	public Javino() {
 		load();
@@ -19,7 +19,7 @@ public class Javino {
 
 	public Javino(String pathPython) {
 		load();
-		if (whoSO() == 1) {
+		if (whichOperationalSystem() == 1) {
 			this.pythonPlataform = pathPython + "\\python.exe";
 		} else {
 			this.pythonPlataform = pathPython + "/python";
@@ -30,11 +30,11 @@ public class Javino {
 		unlock();
 		System.out.println("[JAVINO] Using version " + this.version
 				+ " CEFET/RJ, Brazil");
-		this.setpath(whoSO());
+		this.setPath(whichOperationalSystem());
 		this.createPythonFile();
 	}
 
-	private void setpath(int sp_OS) {
+	private void setPath(int sp_OS) {
 		if (sp_OS == 1) {
 			this.pythonPlataform = "C:\\Python27\\python.exe";
 		} else {
@@ -42,7 +42,7 @@ public class Javino {
 		}
 	}
 
-	private int whoSO() {
+	private int whichOperationalSystem() {
 		// Linux = 0
 		// Windows = 1
 		String os = System.getProperty("os.name");
@@ -54,13 +54,13 @@ public class Javino {
 	}
 
 	private void unlock() {
-		File pasta = new File(".");
-		File[] arquivos = pasta.listFiles();
+		File folder = new File(".");
+		File[] files = folder.listFiles();
 
-		for (File arquivo : arquivos) {
-			if (arquivo.getName().endsWith("lock")
-					|| arquivo.getName().endsWith("py")) {
-				arquivo.delete();
+		for (File file : files) {
+			if (file.getName().endsWith("lock")
+					|| file.getName().endsWith("py")) {
+				file.delete();
 			}
 		}
 	}
@@ -120,13 +120,13 @@ public class Javino {
 			command[1] = "javython.py";
 			command[2] = operation;
 			command[3] = PORT;
-			command[4] = preparetosend(MSG);
+			command[4] = prepareToSend(MSG);
 			ProcessBuilder pBuilder = new ProcessBuilder(command);
 			pBuilder.redirectErrorStream(true);
 			try {
 				Process p = pBuilder.start();
 				p.waitFor();
-				BufferedReader saida = new BufferedReader(
+				BufferedReader output = new BufferedReader(
 						new InputStreamReader(p.getInputStream()));
 				if (p.exitValue() == 0) {
 					result = true;
@@ -134,7 +134,7 @@ public class Javino {
 				} else {
 					String line = null;
 					String out = "";
-					while ((line = saida.readLine()) != null) {
+					while ((line = output.readLine()) != null) {
 						out = out + line;
 					}
 					System.out.println("[JAVINO] Fatal error! [" + out + "]");
@@ -142,7 +142,7 @@ public class Javino {
 					lockPort(false, PORT);
 				}
 			} catch (IOException | InterruptedException e) {
-				System.out.println("[JAVINO] Error on commnad execution");
+				System.out.println("[JAVINO] Error on command execution");
 				e.printStackTrace();
 				result = false;
 				lockPort(false, PORT);
@@ -170,34 +170,30 @@ public class Javino {
 			try {
 				Process p = pBuilder.start();
 				p.waitFor();
-				BufferedReader read_to_array = new BufferedReader(
+				BufferedReader array = new BufferedReader(
 						new InputStreamReader(p.getInputStream()));
 				if (p.exitValue() == 0) {
-					result = setArryMsg(read_to_array);
+					result = setArryMsg(array);
 					lockPort(false, PORT);
 				} else {
 					String line = null;
-					String out = "";
-					while ((line = read_to_array.readLine()) != null) {
-						out = out + line;
+					String output = "";
+					while ((line = array.readLine()) != null) {
+						output = output + line;
 					}
-					System.out.println("[JAVINO] Fatal error! [" + out + "]");
+					System.out.println("[JAVINO] Fatal error! [" + output + "]");
 					result = false;
 					lockPort(false, PORT);
 				}
 
 			} catch (IOException | InterruptedException e) {
-				System.out.println("[JAVINO] Error on listen");
+				System.out.println("[JAVINO] Error on listening microcontrolled board.");
 				e.printStackTrace();
 				result = false;
 				lockPort(false, PORT);
 			}
-		}
-		
-		
-		
-		return result;
-		
+		}		
+		return result;		
 	}
 	
 	public boolean requestData(String PORT, String MSG) {
@@ -212,24 +208,24 @@ public class Javino {
 			command[1] = "javython.py";
 			command[2] = operation;
 			command[3] = PORT;
-			command[4] = preparetosend(MSG);
+			command[4] = prepareToSend(MSG);
 			ProcessBuilder pBuilder = new ProcessBuilder(command);
 			pBuilder.redirectErrorStream(true);
 			try {
 				Process p = pBuilder.start();
 				p.waitFor();
-				BufferedReader read_to_array = new BufferedReader(
+				BufferedReader array = new BufferedReader(
 						new InputStreamReader(p.getInputStream()));
 				if (p.exitValue() == 0) {
-					result = setArryMsg(read_to_array);
+					result = setArryMsg(array);
 					lockPort(false, PORT);
 				} else {
 					String line = null;
-					String out = "";
-					while ((line = read_to_array.readLine()) != null) {
-						out = out + line;
+					String output = "";
+					while ((line = array.readLine()) != null) {
+						output = output + line;
 					}
-					System.out.println("[JAVINO] Fatal error! [" + out + "]");
+					System.out.println("[JAVINO] Fatal error! [" + output + "]");
 					result = false;
 					lockPort(false, PORT);
 				}
@@ -241,15 +237,13 @@ public class Javino {
 				lockPort(false, PORT);
 			}
 		}
-		
 		return result;
-
 	}
 
 	public String getData() {
-		String out = this.finalymsg;
-		this.finalymsg = null;
-		return out;
+		String output = this.finalMsg;
+		this.finalMsg = null;
+		return output;
 	}
 		
 	private boolean setArryMsg(BufferedReader reader) {
@@ -260,57 +254,57 @@ public class Javino {
 				out = out + line;
 			}
 		} catch (IOException e) {
-			System.out.println("[JAVINO] Error at message processing");
+			System.out.println("[JAVINO] Error in message processing.");
 			return false;
 		}
 		return preamble(out.toCharArray());
 	}
 
-	private String char2string(char in[], int sizein) {
+	private String char2String(char in[], int sizein) {
 		int newsize = sizein - 6;
-		char[] out = new char[newsize];
+		char[] output = new char[newsize];
 		int cont = 0;
 		for (int i = 6; i < sizein; i++) {
-			out[cont] = in[i];
+			output[cont] = in[i];
 			cont++;
 		}
-		return String.valueOf(out);
+		return String.valueOf(output);
 	}
 
-	private void setfinalmsg(String s_msg) {
-		this.finalymsg = s_msg;
+	private void setFinalMsg(String s_msg) {
+		this.finalMsg = s_msg;
 	}
 
-	private boolean preamble(char[] pre_arraymsg) {
+	private boolean preamble(char[] preArrayMsg) {
 		try {
-			char p1 = pre_arraymsg[0];
-			char p2 = pre_arraymsg[1];
-			char p3 = pre_arraymsg[2];
-			char p4 = pre_arraymsg[3];
+			char p1 = preArrayMsg[0];
+			char p2 = preArrayMsg[1];
+			char p3 = preArrayMsg[2];
+			char p4 = preArrayMsg[3];
 			if ((p1 == 'f')
 					&& (p2 == 'f')
 					&& (p3 == 'f')
 					&& (p4 == 'e')
-					&& (this.monitormsg(forInt(pre_arraymsg[5]),
-							forInt(pre_arraymsg[4]), pre_arraymsg.length))) {
-				setfinalmsg(char2string(pre_arraymsg, pre_arraymsg.length));
+					&& (this.monitorMsg(forInt(preArrayMsg[5]),
+							forInt(preArrayMsg[4]), preArrayMsg.length))) {
+				setFinalMsg(char2String(preArrayMsg, preArrayMsg.length));
 				return true;
 			} else {
 				char[] newArrayMsg;
-				newArrayMsg = new char[(pre_arraymsg.length - 1)];
+				newArrayMsg = new char[(preArrayMsg.length - 1)];
 				for (int cont = 0; cont < newArrayMsg.length; cont++) {
-					newArrayMsg[cont] = pre_arraymsg[cont + 1];
+					newArrayMsg[cont] = preArrayMsg[cont + 1];
 				}
 				return this.preamble(newArrayMsg);
 			}
 		} catch (Exception ex) {
-			System.out.println("[JAVINO] Invalid message");
+			System.out.println("[JAVINO] Invalid message.");
 			ex.printStackTrace();
 			return false;
 		}
 	}
 
-	private boolean monitormsg(int x, int y, int m_size) {
+	private boolean monitorMsg(int x, int y, int m_size) {
 		int converted = x + (y * 16);
 		int size_of_msg = m_size - 6;
 		if (converted == size_of_msg) {
@@ -371,12 +365,12 @@ public class Javino {
 		return vI;
 	}
 
-	private String preparetosend(String msg) {
-		msg = "fffe" + int2hex(msg.length()) + msg;
+	private String prepareToSend(String msg) {
+		msg = "fffe" + int2Hex(msg.length()) + msg;
 		return msg;
 	}
 
-	private String int2hex(int v) {
+	private String int2Hex(int v) {
 		String stringOne = Integer.toHexString(v);
 		if (v < 16) {
 			stringOne = "0" + stringOne;
@@ -386,34 +380,34 @@ public class Javino {
 
 	private void createPythonFile() {
 		try {
-			FileWriter arq = new FileWriter("javython.py");
-			PrintWriter gravarArq = new PrintWriter(arq);
-			gravarArq.printf("import sys\n");
-			gravarArq.printf("import serial\n");
+			FileWriter file = new FileWriter("javython.py");
+			PrintWriter saveFile = new PrintWriter(file);
+			saveFile.printf("import sys\n");
+			saveFile.printf("import serial\n");
 
-			gravarArq.printf("OP=sys.argv[1]\n");
-			gravarArq.printf("PORT=sys.argv[2]\n");
-			gravarArq.printf("MSG=sys.argv[3]\n");
+			saveFile.printf("OP=sys.argv[1]\n");
+			saveFile.printf("PORT=sys.argv[2]\n");
+			saveFile.printf("MSG=sys.argv[3]\n");
 
-			gravarArq.printf("try:\n");
-			gravarArq.printf("\tcomm = serial.Serial(PORT, 9600)\n");
-			gravarArq.printf("\tcomm.open\n");
-			gravarArq.printf("\tcomm.isOpen\n");
-			gravarArq.printf("\tif(OP=='command'):\n");
-			gravarArq.printf("\t\tcomm.write(MSG)\n");
-			gravarArq.printf("\tif(OP=='request'):\n");
-			gravarArq.printf("\t\tcomm.write(MSG)\n");
-			gravarArq.printf("\t\tprint (comm.readline())\n");
-			gravarArq.printf("\tif(OP=='listen'):\n");
-			gravarArq.printf("\t\tprint (comm.readline())\n");
-			gravarArq.printf("\tcomm.close\n");
+			saveFile.printf("try:\n");
+			saveFile.printf("\tcomm = serial.Serial(PORT, 9600)\n");
+			saveFile.printf("\tcomm.open\n");
+			saveFile.printf("\tcomm.isOpen\n");
+			saveFile.printf("\tif(OP=='command'):\n");
+			saveFile.printf("\t\tcomm.write(MSG)\n");
+			saveFile.printf("\tif(OP=='request'):\n");
+			saveFile.printf("\t\tcomm.write(MSG)\n");
+			saveFile.printf("\t\tprint (comm.readline())\n");
+			saveFile.printf("\tif(OP=='listen'):\n");
+			saveFile.printf("\t\tprint (comm.readline())\n");
+			saveFile.printf("\tcomm.close\n");
 
-			gravarArq.printf("except:\n");
-			gravarArq.printf("\tprint (\"Error on conect \"+PORT)\n");
-			gravarArq.printf("\tsys.exit(1)\n");
+			saveFile.printf("except:\n");
+			saveFile.printf("\tprint (\"Error on conect \"+PORT)\n");
+			saveFile.printf("\tsys.exit(1)\n");
 
-			arq.flush();
-			arq.close();
+			file.flush();
+			file.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -475,10 +469,10 @@ public class Javino {
 			}
 
 		} catch (Exception ex) {
-			System.out.println("[JAVINO] Using version " + staticversion
+			System.out.println("[JAVINO] Using version " + staticVersion
 					+ " CEFET/RJ, Brazil");
 			System.out
-					.println("\tTo use Javino, look the User Manual at http://javino.sf.net");
+					.println("\tTo use Javino, look ate the User Manual at http://javino.sf.net");
 			System.out
 					.println("For more information try: \n\t java -jar javino.jar --help");
 
