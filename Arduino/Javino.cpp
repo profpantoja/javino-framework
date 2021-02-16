@@ -17,24 +17,24 @@ Javino::Javino()
 
 }
 
-void Javino::sendmsg(String m)
+void Javino::sendMsg(String msg)
 {
-	m = "fffe"+int2hex(m.length())+m;
-	Serial.println(m);
+	msg = "fffe"+int2Hex(msg.length())+msg;
+	Serial.println(msg);
 }
 
-String Javino::getmsg()
+String Javino::getMsg()
 {
-   return _finalymsg;
+   return _finalMsg;
 }
 
-boolean Javino::availablemsg(){
+boolean Javino::availableMsg(){
     //_msg = false;
-    inicializa();
-	return _msg;
+    start();
+	  return _msg;
 }
 
-void Javino::inicializa(){
+void Javino::start(){
   _x         = 261;
   _d         = 0;
   _n         = 10;
@@ -48,7 +48,7 @@ void Javino::inicializa(){
 
 void Javino::listening(){
   if(Serial.available()>0){
-    registra();
+    register();
   }
   else{
     timeout();
@@ -61,59 +61,59 @@ void Javino::timeout(){
   if(_n>0){
     listening();
   }else{
-    aborta();
+    abort();
   }
 }
 
-void Javino::registra(){
-    _arraymsg[_d]=Serial.read();
+void Javino::register(){
+    _arrayMsg[_d]=Serial.read();
     _d++;
     _x--;
     _n=5;
-    monitormsg();
+    monitorMsg();
 }
 
-void Javino::monitormsg(){
+void Javino::monitorMsg(){
 
   if((_d==4)){
-        if((_arraymsg[0]!='f')||(_arraymsg[1]!='f')||(_arraymsg[2]!='f')||(_arraymsg[3]!='e')){
-                aborta();
+        if((_arrayMsg[0]!='f')||(_arrayMsg[1]!='f')||(_arrayMsg[2]!='f')||(_arrayMsg[3]!='e')){
+                abort();
         }
   }else if(_d==6){
-    _x = sizeofmsg();
+    _x = sizeOfMsg();
   }
 
   if(_x==0){
-    tratamsg();
+    treatMsg();
   }else{
     listening();
   }
 }
 
-void Javino::aborta(){
+void Javino::abort(){
 	_msg = false;
     _x=0;
 }
 
-int Javino::sizeofmsg(){
-    int x = forInt(_arraymsg[5]);
-    int y = forInt(_arraymsg[4]);
+int Javino::sizeOfMsg(){
+    int x = forInt(_arrayMsg[5]);
+    int y = forInt(_arrayMsg[4]);
     int convertido = x+(y*16);
     return convertido;
 }
 
-void Javino::tratamsg(){
-  if(preambulo()){
+void Javino::treatMsg(){
+  if(preamble()){
 	_msg=true;
-    _finalymsg = char2string(_arraymsg,_d);
+    _finalMsg = char2String(_arrayMsg,_d);
   }else{
 	_msg=false;
   }
 }
 
-boolean Javino::preambulo(){
+boolean Javino::preamble(){
     boolean out =false;
-  if((_arraymsg[0]=='f')&&(_arraymsg[1]=='f')&&(_arraymsg[2]=='f')&&(_arraymsg[3]=='e')){
+  if((_arrayMsg[0]=='f')&&(_arrayMsg[1]=='f')&&(_arrayMsg[2]=='f')&&(_arrayMsg[3]=='e')){
     out=true;
   }
   return out;
@@ -142,7 +142,7 @@ int Javino::forInt(char v){
   return vI;
 }
 
-String Javino::char2string(char in[], int sizein){
+String Javino::char2String(char in[], int sizein){
   String saida;
   for(int i=6;i<sizein;i++){
     saida=saida+in[i];
@@ -151,7 +151,7 @@ String Javino::char2string(char in[], int sizein){
 }
 
 
-String Javino::int2hex(int v){
+String Javino::int2Hex(int v){
     String  stringOne =  String(v, HEX);
     if(v<16){
       stringOne="0"+stringOne;

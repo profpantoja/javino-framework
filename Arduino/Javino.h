@@ -12,7 +12,7 @@ Version Stable 1.1
 
 #ifndef Javino_h
 #define Javino_h
-#define sizeofarraymsg 261
+#define sizeOfArrayMsg 261
 
 #include "Arduino.h"
 
@@ -20,29 +20,29 @@ class Javino
 {
   public:
     Javino();
-    void sendmsg(String msg);
-    String getmsg();
-    boolean availablemsg();
+    void sendMsg(String msg);
+    String getMsg();
+    boolean availableMsg();
   private:
 	int _x;
 	int _d;
 	int _n;
-	char _arraymsg[sizeofarraymsg];
+	char _arrayMsg[sizeOfArrayMsg];
 	boolean _msg;
-	String _finalymsg;
-	String int2hex(int v);
-	void inicializa();
+	String _finalMsg;
+	String int2Hex(int v);
+	void start();
 	void listening();
 	void timeout();
-	void registra();
-	void monitormsg();
-	void aborta();
-	int sizeofmsg();
-	void tratamsg();
-	boolean preambulo();
-	int hex2int(char z[]);
+	void register();
+	void monitorMsg();
+	void abort();
+	int sizeOfMsg();
+	void treateMsg();
+	boolean preamble();
+	int hex2Int(char z[]);
 	int forInt(char v);
-	String char2string(char in[], int sizein);
+	String char2String(char in[], int sizeIn);
 };
 
 #endif
