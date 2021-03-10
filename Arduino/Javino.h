@@ -13,7 +13,7 @@ Version Stable 1.1
 #ifndef Javino_h
 #define Javino_h
 #define sizeOfArrayMsg 261
-
+#include "VirtualWire.h"
 #include "Arduino.h"
 
 class Javino
@@ -23,6 +23,8 @@ class Javino
     void sendMsg(String msg);
     String getMsg();
     boolean availableMsg();
+	void enableRF(int pinTX, int pinRX);
+	void sendMsgRF(String msg);
   private:
 	int _x;
 	int _d;
@@ -34,11 +36,11 @@ class Javino
 	void start();
 	void listening();
 	void timeout();
-	void register();
+	void registrator();
 	void monitorMsg();
 	void abort();
 	int sizeOfMsg();
-	void treateMsg();
+	void treatMsg();
 	boolean preamble();
 	int hex2Int(char z[]);
 	int forInt(char v);

@@ -11,6 +11,7 @@ Version Stable 1.1
 
 #include "Arduino.h"
 #include "Javino.h"
+#include "VirtualWire.h"
 
 Javino::Javino()
 {
@@ -48,7 +49,7 @@ void Javino::start(){
 
 void Javino::listening(){
   if(Serial.available()>0){
-    register();
+    registrator();
   }
   else{
     timeout();
@@ -65,7 +66,7 @@ void Javino::timeout(){
   }
 }
 
-void Javino::register(){
+void Javino::registrator(){
     _arrayMsg[_d]=Serial.read();
     _d++;
     _x--;
@@ -159,3 +160,49 @@ String Javino::int2Hex(int v){
   return stringOne;
 }
 
+void Javino::enableRF(int pinTX, int pinRX){
+	vw_set_ptt_inverted(true);
+	pinMode(pinTX, OUTPUT);
+	vw_set_tx_pin(pinTX);
+	pinMode(pinRX, INPUT);
+	vw_set_rx_pin(pinRX);
+	vw_setup(4096);
+}
+
+void Javino::sendMsgRF(String m){
+	 m = "fffe"+int2Hex(m.length())+m;
+	
+	String str1 = m.substring(0, 66);
+	String str2 = m.substring(66, 132);
+	String str3 = m.substring(132, 231);
+	String str4 = m.substring(231, 262);
+
+	
+	char charMsg1[str1.length()+1];
+	char charMsg2[str2.length()+1];
+	char charMsg3[str3.length()+1];
+	char charMsg4[str4.length()+1];
+
+	
+	str1.toCharArray(charMsg1, str1.length()+1);
+	str2.toCharArray(charMsg2, str2.length()+1);
+	str3.toCharArray(charMsg3, str3.length()+1);
+	str4.toCharArray(charMsg4, str4.length()+1);
+
+	
+	vw_send((uint8_t *)charMsg1, strlen(charMsg1));
+	vw_wait_tx();
+	delay(25);
+	
+	vw_send((uint8_t *)charMsg2, strlen(charMsg2));
+	vw_wait_tx();
+	delay(25);
+
+	vw_send((uint8_t *)charMsg3, strlen(charMsg3));
+	vw_wait_tx();
+	delay(25);
+
+	vw_send((uint8_t *)charMsg4, strlen(charMsg4));
+	vw_wait_tx();
+	delay(25);
+}
