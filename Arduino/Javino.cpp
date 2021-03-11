@@ -167,6 +167,7 @@ void Javino::enableRF(int pinTX, int pinRX){
 	pinMode(pinRX, INPUT);
 	vw_set_rx_pin(pinRX);
 	vw_setup(4096);
+	vw_rx_start(); 
 }
 
 void Javino::sendMsgRF(String m){
