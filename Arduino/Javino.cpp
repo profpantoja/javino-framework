@@ -170,16 +170,11 @@ void Javino::enableRF(int pinTX, int pinRX){
 	vw_rx_start(); 
 }
 
-void Javino::sendMsgRF(String m){
-	int mlength = m.length();
-	if(m<=64){
-		m = "fffe"+int2Hex(m.length())+m;
-		char charMsg[mlength+1];
-		m.toCharArray(charMsg, mlength+1);
-		vw_send((uint8_t *)charMsg, strlen(charMsg));
-		vw_wait_tx();
-	}else{
-		Serial.println("I can only send until 64 characters");
-	}
-
+void Javino::sendMsgRF(String strMsgIn){
+	unsigned int sizeStrMsgIn = strMsgIn.length();  
+	char charMsgIn[sizeStrMsgIn];
+	strMsgIn.toCharArray(charMsgIn, sizeStrMsgIn+1);
+	vw_send((uint8_t *)charMsgIn, sizeStrMsgIn);
+	vw_wait_tx();
 }
+
