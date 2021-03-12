@@ -25,6 +25,7 @@ class Javino
     boolean availableMsg();
 	void enableRF(int pinTX, int pinRX);
 	void sendMsgRF(String msg);
+	boolean availableMsgRF();
   private:
 	int _x;
 	int _d;
@@ -45,6 +46,8 @@ class Javino
 	int hex2Int(char z[]);
 	int forInt(char v);
 	String char2String(char in[], int sizeIn);
+	void registratorRF(char byteIn);
+	void listeningRF();
 };
 
 #endif

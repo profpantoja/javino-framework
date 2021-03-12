@@ -30,8 +30,8 @@ String Javino::getMsg()
 }
 
 boolean Javino::availableMsg(){
-    //_msg = false;
     start();
+	listening();  //removido da função start...
 	  return _msg;
 }
 
@@ -44,7 +44,6 @@ void Javino::start(){
     _arraymsg[i] = (char)0;
   }
   */
-  listening();
 }
 
 void Javino::listening(){
@@ -183,3 +182,39 @@ void Javino::sendMsgRF(String strMsgIn){
 	}
 }
 
+void Javino::listeningRF(){
+	uint8_t buf[70];
+    uint8_t buflen = 70;
+	if (vw_get_message(buf, &buflen)){
+	  for (int i=0; i < buflen; i++){
+		 registratorRF(buf[i]);
+	  }  
+	}else{
+		abort();
+	}
+}
+
+void Javino::registratorRF(char byteIn){
+	_arrayMsg[_d]=byteIn;
+    _d++;
+    _x--;
+    _n=5;
+
+	if((_d==4)){
+		if((_arrayMsg[0]!='f')||(_arrayMsg[1]!='f')||(_arrayMsg[2]!='f')||(_arrayMsg[3]!='e')){
+			abort();
+        }
+	}else if(_d==6){
+		_x = sizeOfMsg();
+	}
+
+	if(_x==0){
+		treatMsg();
+	}
+}
+
+boolean Javino::availableMsgRF(){
+    start();
+	listeningRF();
+	return _msg;
+}
