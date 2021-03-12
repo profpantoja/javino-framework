@@ -171,39 +171,15 @@ void Javino::enableRF(int pinTX, int pinRX){
 }
 
 void Javino::sendMsgRF(String m){
-	 m = "fffe"+int2Hex(m.length())+m;
-	
-	String str1 = m.substring(0, 66);
-	String str2 = m.substring(66, 132);
-	String str3 = m.substring(132, 231);
-	String str4 = m.substring(231, 262);
+	int mlength = m.length();
+	if(m<=64){
+		m = "fffe"+int2Hex(m.length())+m;
+		char charMsg[mlength+1];
+		m.toCharArray(charMsg, mlength+1);
+		vw_send((uint8_t *)charMsg, strlen(charMsg));
+		vw_wait_tx();
+	}else{
+		Serial.println("I can only send until 64 characters");
+	}
 
-	
-	char charMsg1[str1.length()+1];
-	char charMsg2[str2.length()+1];
-	char charMsg3[str3.length()+1];
-	char charMsg4[str4.length()+1];
-
-	
-	str1.toCharArray(charMsg1, str1.length()+1);
-	str2.toCharArray(charMsg2, str2.length()+1);
-	str3.toCharArray(charMsg3, str3.length()+1);
-	str4.toCharArray(charMsg4, str4.length()+1);
-
-	
-	vw_send((uint8_t *)charMsg1, strlen(charMsg1));
-	vw_wait_tx();
-	delay(25);
-	
-	vw_send((uint8_t *)charMsg2, strlen(charMsg2));
-	vw_wait_tx();
-	delay(25);
-
-	vw_send((uint8_t *)charMsg3, strlen(charMsg3));
-	vw_wait_tx();
-	delay(25);
-
-	vw_send((uint8_t *)charMsg4, strlen(charMsg4));
-	vw_wait_tx();
-	delay(25);
 }
