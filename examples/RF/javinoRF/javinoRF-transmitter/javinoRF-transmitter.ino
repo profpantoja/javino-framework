@@ -8,5 +8,5 @@ void loop() {
   Javino j;
   j.enableRF(12,11);
   j.sendMsgRF("Hello Javino!");
-  delay(5000);
+  delay(500);
 }
