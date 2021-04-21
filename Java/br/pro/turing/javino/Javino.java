@@ -28,8 +28,8 @@ public class Javino {
 
 	private void load() {
 		unlock();
-		System.out.println("[JAVINO] Using version " + this.version
-				+ " CEFET/RJ, Brazil");
+		System.out.println("[JAVINO] Hello, You are using version " + this.version
+				+ " - CEFET/RJ, Brazil");
 		this.setPath(whichOperationalSystem());
 		this.createPythonFile();
 	}
@@ -142,7 +142,7 @@ public class Javino {
 					lockPort(false, PORT);
 				}
 			} catch (IOException | InterruptedException e) {
-				System.out.println("[JAVINO] Error on command execution");
+				System.out.println("[JAVINO] Error on command execution!");
 				e.printStackTrace();
 				result = false;
 				lockPort(false, PORT);
@@ -231,7 +231,7 @@ public class Javino {
 				}
 
 			} catch (IOException | InterruptedException e) {
-				System.out.println("[JAVINO] Error on listen");
+				System.out.println("[JAVINO] Error on listening!");
 				e.printStackTrace();
 				result = false;
 				lockPort(false, PORT);
@@ -472,7 +472,7 @@ public class Javino {
 			System.out.println("[JAVINO] Using version " + staticVersion
 					+ " CEFET/RJ, Brazil");
 			System.out
-					.println("\tTo use Javino, look ate the User Manual at http://javino.sf.net");
+					.println("\tTo use Javino, look for the User Manual at http://javino.sf.net");
 			System.out
 					.println("For more information try: \n\t java -jar javino.jar --help");
 

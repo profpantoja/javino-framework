@@ -98,8 +98,8 @@ void Javino::abort(){
 int Javino::sizeOfMsg(){
     int x = forInt(_arrayMsg[5]);
     int y = forInt(_arrayMsg[4]);
-    int convertido = x+(y*16);
-    return convertido;
+    int converted = x+(y*16);
+    return converted;
 }
 
 void Javino::treatMsg(){
@@ -143,11 +143,11 @@ int Javino::forInt(char v){
 }
 
 String Javino::char2String(char in[], int sizein){
-  String saida;
+  String output;
   for(int i=6;i<sizein;i++){
-    saida=saida+in[i];
+    output=output+in[i];
   }
-  return saida;
+  return output;
 }
 
 
@@ -173,7 +173,7 @@ void Javino::sendMsgRF(String strMsgIn){
 	strMsgIn = "fffe"+int2Hex(strMsgIn.length())+strMsgIn;
 	_x = strMsgIn.length(); 
 	if(_x>70){
-			Serial.println("sorry only 64 characters");
+			Serial.println("Sorry! It is only allowed 64 characters!");
 	}else{
 		char charMsgIn[_x];
 		strMsgIn.toCharArray(charMsgIn, _x+1);
