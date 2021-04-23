@@ -1,4 +1,4 @@
-package br.pro.turing.javino;
+package Java.br.pro.turing.javino;
 
 import java.io.BufferedReader;
 import java.io.File;
