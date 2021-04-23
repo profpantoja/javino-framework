@@ -187,7 +187,7 @@ public class Javino {
 				}
 
 			} catch (IOException | InterruptedException e) {
-				System.out.println("[JAVINO] Error on listening microcontrolled board.");
+				System.out.println("[JAVINO] Error on listening the microcontrolled board.");
 				e.printStackTrace();
 				result = false;
 				lockPort(false, PORT);
