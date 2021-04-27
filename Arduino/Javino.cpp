@@ -218,3 +218,44 @@ boolean Javino::availableMsgRF(){
 	listeningRF();
 	return _msg;
 }
+
+//implementando recurso de endereçamento em Base64
+void Javino::setId(String strID){
+  _me = strID;
+}
+
+void Javino::setAlias(String strAlias){
+  if(strAlias.length()==4){
+  boolean exist = false;
+  int x = getQtdAlias();
+  for (int i = 1; i <= x; i++) {
+    if(getAlias(i)==strAlias){
+      exist = true;
+    }
+  }
+  if(!exist){
+   _me = _me + strAlias; 
+  }   
+}
+}
+
+int Javino::getQtdAlias(){
+  return _me.length()/4;
+}
+
+String Javino::getAlias(int i){
+  i = (i-1)*4;
+  return _me.substring(i,i+4);
+}
+
+String Javino::getId(){
+  int x = getQtdAlias();
+  String out;
+  if(x==0){
+	out = "[]";  
+  }
+   for (int i = 1; i <= x; i++) {
+    out = out+"["+getAlias(i)+"]";
+  }
+  return out;
+}

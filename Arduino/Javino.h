@@ -26,6 +26,9 @@ class Javino
 	void enableRF(int pinTX, int pinRX);
 	void sendMsgRF(String msg);
 	boolean availableMsgRF();
+	void setId(String strID);
+	void setAlias(String strAlias);
+	String getId();
   private:
 	int _x;
 	int _d;
@@ -34,6 +37,7 @@ class Javino
 	boolean _msg;
 	String _finalMsg;
 	String int2Hex(int v);
+	String _me;
 	void start();
 	void listening();
 	void timeout();
@@ -48,6 +52,7 @@ class Javino
 	String char2String(char in[], int sizeIn);
 	void registratorRF(char byteIn);
 	void listeningRF();
+	int getQtdAlias();
+	String getAlias(int i);
 };
-
 #endif
