@@ -28,8 +28,7 @@ public class Javino {
 
 	private void load() {
 		unlock();
-		System.out.println("[JAVINO] Hello, You are using version " + this.version
-				+ " - CEFET/RJ, Brazil");
+		System.out.println("[JAVINO] Hello, You are using version " + this.version + " - CEFET/RJ, Brazil");
 		this.setPath(whichOperationalSystem());
 		this.createPythonFile();
 	}
@@ -58,8 +57,7 @@ public class Javino {
 		File[] files = folder.listFiles();
 
 		for (File file : files) {
-			if (file.getName().endsWith("lock")
-					|| file.getName().endsWith("py")) {
+			if (file.getName().endsWith("lock") || file.getName().endsWith("py")) {
 				file.delete();
 			}
 		}
@@ -86,7 +84,7 @@ public class Javino {
 		File file = new File(lockFileName(lc_PORT));
 		if (file.exists()) {
 			busy = true;
-			System.out.println("[JAVINO] The port " + lc_PORT + " is busy");
+			System.out.println("[JAVINO] The port " + lc_PORT + " is busy!");
 		} else {
 			busy = false;
 		}
@@ -108,29 +106,60 @@ public class Javino {
 
 	}
 
-	public boolean sendCommand(String PORT, String MSG) {
+	public String decodeDiffusion(String message) {
+		String content = new String();
+		/*
+		 * Para implementar a difusão. Caso mude todo o Javino para 64, bastaria chamar
+		 * a decodificação modificada novamente. Retornaríamos só sender e o content
+		 */
+		return content;
+	}
+
+	public boolean diffuse(String port, String sender, String receiver, String content) {
+		if (port != null) {
+			if (sender != null) {
+				if (receiver != null) {
+					if (content != null) {
+						String message = sender + ";" + content;
+						String diffusionMessage = receiver + this.intTo64(Integer.valueOf(message)) + message;
+						if (diffusionMessage.length() > 64)
+							return this.sendCommand(port, diffusionMessage);
+						else
+							System.out.println("[JAVINO] The message must have at most 64 characters "
+									+ "including sender, receiver, and the content.");
+					} else
+						System.out.println("[JAVINO] The message content cannot be null!");
+				} else
+					System.out.println("[JAVINO] The receiver cannot be null!");
+			} else
+				System.out.println("[JAVINO] The sender cannot be null!");
+		} else
+			System.out.println("[JAVINO] The port cannot be null!");
+		return false;
+	}
+
+	public boolean sendCommand(String port, String message) {
 		boolean result;
-		if (portLocked(PORT)) {
+		if (portLocked(port)) {
 			result = false;
 		} else {
-			lockPort(true, PORT);
+			lockPort(true, port);
 			String operation = "command";
 			String[] command = new String[5];
 			command[0] = this.pythonPlataform;
 			command[1] = "javython.py";
 			command[2] = operation;
-			command[3] = PORT;
-			command[4] = prepareToSend(MSG);
+			command[3] = port;
+			command[4] = prepareToSend(message);
 			ProcessBuilder pBuilder = new ProcessBuilder(command);
 			pBuilder.redirectErrorStream(true);
 			try {
 				Process p = pBuilder.start();
 				p.waitFor();
-				BufferedReader output = new BufferedReader(
-						new InputStreamReader(p.getInputStream()));
+				BufferedReader output = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				if (p.exitValue() == 0) {
 					result = true;
-					lockPort(false, PORT);
+					lockPort(false, port);
 				} else {
 					String line = null;
 					String out = "";
@@ -139,21 +168,21 @@ public class Javino {
 					}
 					System.out.println("[JAVINO] Fatal error! [" + out + "]");
 					result = false;
-					lockPort(false, PORT);
+					lockPort(false, port);
 				}
 			} catch (IOException | InterruptedException e) {
 				System.out.println("[JAVINO] Error on command execution!");
 				e.printStackTrace();
 				result = false;
-				lockPort(false, PORT);
+				lockPort(false, port);
 			}
 		}
 		return result;
 
 	}
-	
-	public boolean listenArduino(String PORT){
-			boolean result;
+
+	public boolean listenController(String PORT) {
+		boolean result;
 		if (portLocked(PORT)) {
 			result = false;
 		} else {
@@ -170,8 +199,7 @@ public class Javino {
 			try {
 				Process p = pBuilder.start();
 				p.waitFor();
-				BufferedReader array = new BufferedReader(
-						new InputStreamReader(p.getInputStream()));
+				BufferedReader array = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				if (p.exitValue() == 0) {
 					result = setArryMsg(array);
 					lockPort(false, PORT);
@@ -192,10 +220,10 @@ public class Javino {
 				result = false;
 				lockPort(false, PORT);
 			}
-		}		
-		return result;		
+		}
+		return result;
 	}
-	
+
 	public boolean requestData(String PORT, String MSG) {
 		boolean result;
 		if (portLocked(PORT)) {
@@ -214,8 +242,7 @@ public class Javino {
 			try {
 				Process p = pBuilder.start();
 				p.waitFor();
-				BufferedReader array = new BufferedReader(
-						new InputStreamReader(p.getInputStream()));
+				BufferedReader array = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				if (p.exitValue() == 0) {
 					result = setArryMsg(array);
 					lockPort(false, PORT);
@@ -245,7 +272,7 @@ public class Javino {
 		this.finalMsg = null;
 		return output;
 	}
-		
+
 	private boolean setArryMsg(BufferedReader reader) {
 		String line = null;
 		String out = new String();
@@ -260,17 +287,6 @@ public class Javino {
 		return preamble(out.toCharArray());
 	}
 
-	private String char2String(char in[], int sizein) {
-		int newsize = sizein - 6;
-		char[] output = new char[newsize];
-		int cont = 0;
-		for (int i = 6; i < sizein; i++) {
-			output[cont] = in[i];
-			cont++;
-		}
-		return String.valueOf(output);
-	}
-
 	private void setFinalMsg(String s_msg) {
 		this.finalMsg = s_msg;
 	}
@@ -281,13 +297,9 @@ public class Javino {
 			char p2 = preArrayMsg[1];
 			char p3 = preArrayMsg[2];
 			char p4 = preArrayMsg[3];
-			if ((p1 == 'f')
-					&& (p2 == 'f')
-					&& (p3 == 'f')
-					&& (p4 == 'e')
-					&& (this.monitorMsg(forInt(preArrayMsg[5]),
-							forInt(preArrayMsg[4]), preArrayMsg.length))) {
-				setFinalMsg(char2String(preArrayMsg, preArrayMsg.length));
+			if ((p1 == 'f') && (p2 == 'f') && (p3 == 'f') && (p4 == 'e')
+					&& (this.monitorMsg(hexToInt(preArrayMsg[5]), hexToInt(preArrayMsg[4]), preArrayMsg.length))) {
+				setFinalMsg(charToString(preArrayMsg, preArrayMsg.length));
 				return true;
 			} else {
 				char[] newArrayMsg;
@@ -313,7 +325,12 @@ public class Javino {
 		return false;
 	}
 
-	private int forInt(char v) {
+	private String prepareToSend(String msg) {
+		msg = "fffe" + intToHex(msg.length()) + msg;
+		return msg;
+	}
+
+	private int hexToInt(char v) {
 		int vI = 0;
 		switch (v) {
 		case '1':
@@ -365,14 +382,28 @@ public class Javino {
 		return vI;
 	}
 
-	private String prepareToSend(String msg) {
-		msg = "fffe" + int2Hex(msg.length()) + msg;
-		return msg;
+	private String charToString(char in[], int sizein) {
+		int newsize = sizein - 6;
+		char[] output = new char[newsize];
+		int cont = 0;
+		for (int i = 6; i < sizein; i++) {
+			output[cont] = in[i];
+			cont++;
+		}
+		return String.valueOf(output);
 	}
 
-	private String int2Hex(int v) {
-		String stringOne = Integer.toHexString(v);
-		if (v < 16) {
+	private String intTo64(int amount) {
+		return "";
+	}
+
+	private int _64ToInt(String character) {
+		return 0;
+	}
+
+	private String intToHex(int amount) {
+		String stringOne = Integer.toHexString(amount);
+		if (amount < 16) {
 			stringOne = "0" + stringOne;
 		}
 		return stringOne;
@@ -403,7 +434,7 @@ public class Javino {
 			saveFile.printf("\tcomm.close\n");
 
 			saveFile.printf("except:\n");
-			saveFile.printf("\tprint (\"Error on conect \"+PORT)\n");
+			saveFile.printf("\tprint (\"Error connecting on \"+PORT)\n");
 			saveFile.printf("\tsys.exit(1)\n");
 
 			file.flush();
@@ -418,24 +449,17 @@ public class Javino {
 		try {
 			String type = args[0];
 			if (type.equals("--help")) {
-				System.out
-						.println("java -jar javino.jar [TYPE] [PORT] [MSG] [PythonPath]");
-				System.out
-						.println("\n[TYPE] "
-								+ "\n request -- send a request to Arduino, wait answer "
-								+ "\n command -- send a command to Arduino, without wait answer");
-								
-				System.out.println("\n[PORT]"
-						+ "\n Set communication serial port"
-						+ "\n example: \t COM3 - For Windows"
+				System.out.println("java -jar javino.jar [TYPE] [PORT] [MSG] [PythonPath]");
+				System.out.println("\n[TYPE] " + "\n request -- send a request to a microcontroller, wait answer "
+						+ "\n command -- send a command to a microcontroller, without wait answer");
+
+				System.out.println("\n[PORT]" + "\n Set communication serial port" + "\n example: \t COM3 - For Windows"
 						+ "\n \t\t /dev/ttyACM0 - For Linux");
-				System.out.println("\n[MSG]" + "\n Message for Arduino-side"
-						+ "\n example: \t \"Hello Arduino!\"");
-				System.out
-						.println("\n[PythonPath]"
-								+ "\n Set Path of Python in your system. This is a optional value."
-								+ "example: \n\t \"C:\\\\Python27\" - For a System Windows"
-								+ "\n\t \"/usr/bin\" - For a System Linux");
+				System.out.println(
+						"\n[MSG]" + "\n Message for the microcontroller side" + "\n example: \t \"Hello Controller!\"");
+				System.out.println("\n[PythonPath]" + "\n Set Path of Python in your system. This is a optional value."
+						+ "example: \n\t \"C:\\\\Python27\" - For a System Windows"
+						+ "\n\t \"/usr/bin\" - For a System Linux");
 			} else {
 
 				String port = args[1];
@@ -444,8 +468,7 @@ public class Javino {
 				try {
 					path = args[3];
 				} catch (Exception ex) {
-					System.out
-							.println("[JAVINO] Using default path 'C:\\Python27' or '/usr/bin'");
+					System.out.println("[JAVINO] Using default path 'C:\\Python27' or '/usr/bin'");
 				}
 
 				Javino j;
@@ -469,12 +492,9 @@ public class Javino {
 			}
 
 		} catch (Exception ex) {
-			System.out.println("[JAVINO] Using version " + staticVersion
-					+ " CEFET/RJ, Brazil");
-			System.out
-					.println("\tTo use Javino, look for the User Manual at http://javino.sf.net");
-			System.out
-					.println("For more information try: \n\t java -jar javino.jar --help");
+			System.out.println("[JAVINO] Using version " + staticVersion + " CEFET/RJ, Brazil");
+			System.out.println("\tTo use Javino, look for the User Manual at http://javino.sf.net");
+			System.out.println("For more information try: \n\t java -jar javino.jar --help");
 
 			// ex.printStackTrace();
 		}
