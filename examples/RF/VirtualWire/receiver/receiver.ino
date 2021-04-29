@@ -32,17 +32,11 @@ void loop()
 
     if (vw_get_message(buf, &buflen)) // Non-blocking
     {
-  int i;
-
-//  digitalWrite(13, true); // Flash a light to show received good message
-  // Message with a good checksum received, dump it.
-//  Serial.print("Got: ");
-  
+  int i;  
   for (i = 0; i < buflen; i++)
   {
      m=m+String((char)buf[i]);
   }
-  
   Serial.println(m);
         digitalWrite(13, false);
     }
