@@ -21,12 +21,11 @@ void setup()
     vw_set_tx_pin(12);
     vw_set_ptt_inverted(true); // Required for DR3100
     vw_setup(4096); // Bits per sec
-    delay(300);
 }
 
 void loop()
 {
-    const char *msg = "V1;precisoDeAjudaLocalXYZ";
+    const char *msg = "Olá Mundo!";
     digitalWrite(13, true); // Flash a light to show transmitting
     vw_send((uint8_t *)msg, strlen(msg));
     vw_wait_tx(); // Wait until the whole message is gone
