@@ -39,6 +39,7 @@ class Javino
 	String _finalMsg;
 	String int2Hex(int v);
 	String _me;
+	int _qtdAlias=0;
 	void start();
 	void listening();
 	void timeout();

@@ -174,9 +174,15 @@ void Javino::listeningRF(){
     uint8_t buflen = 69;
 	if (vw_get_message(buf, &buflen)){
 	  for (int i=0; i < buflen; i++){
-		 registratorRF(buf[i]);
-	  }  
-	  treatMsgRF();
+		if(i==4){
+			_msg = preambleRF(_finalMsg);
+			if(!_msg){i=70;}
+		}
+		registratorRF(buf[i]);
+	  }
+	  if(_msg){
+		treatMsgRF();
+	  }	  
 	}else{
 		abort();
 	}
@@ -189,27 +195,25 @@ void Javino::registratorRF(char byteIn){
 }
 
 boolean Javino::preambleRF(String strHeader){
-	int qtdAlias = getQtdAlias();
-	String destgrp  = strHeader.substring(0,2);
-	String destmember = strHeader.substring(2,4);
   boolean out=false;
-	if(destgrp=="//"){
-		if(destmember=="//"){	
+	if(strHeader.substring(0,2)=="//"){
+		if(strHeader.substring(2,4)=="//"){	
 			out=true; /*broadcast*/
-		}else if(qtdAlias>0){
-			for (int i = 1; i <= qtdAlias; i++) {
-				if(destmember==getMyGroup(i)){
+		}else if(_qtdAlias>0){
+			String multiGR = strHeader.substring(2,4);
+			for (int i = 1; i <= _qtdAlias; i++) {
+				if(multiGR==getMyGroup(i)){
 					out=true; /*multicast*/
-					i=qtdAlias+1;
+					i=_qtdAlias+1;
 				}
 			}
 		}
 	}
-	else if(qtdAlias>0){
-		for (int i = 1; i <= qtdAlias; i++) {
-			if((destgrp+destmember)==getAlias(i).substring(0,4)){
+	else if(_qtdAlias>0){
+		for (int i = 1; i <= _qtdAlias; i++) {
+			if((strHeader)==getAlias(i).substring(0,4)){
 				out=true; /*unicast*/
-				i=qtdAlias+1;
+				i=_qtdAlias+1;
 			}
 		}
 	}
@@ -217,25 +221,12 @@ boolean Javino::preambleRF(String strHeader){
 }
 
 void Javino::treatMsgRF(){
-	String header = _finalMsg.substring(0,4);
-	String puremsg = _finalMsg.substring(5,_d);
-	int sizemsgfinal = puremsg.length();
-	
-	if(preambleRF(header)){
-		if(_x==puremsg.length()){
-			_finalMsg=puremsg;
-			_msg=true;
-		}else{
-			//Serial.println("tamanho");
-			//Serial.println(_finalMsg);
-			_msg=false;
-		}
+	if(_x==(_d-5)){
+		_finalMsg=_finalMsg.substring(5,_d);
+		_msg=true;
 	}else{
-		 //Serial.println("cabeçalho");
-		 //Serial.println(_finalMsg);
 		_msg=false;
 	}
-	
 }
 
 boolean Javino::availableMsgRF(){
@@ -250,6 +241,7 @@ boolean Javino::availableMsgRF(){
 //implementando recurso de endereçamento em Base64
 void Javino::setId(String strID){
   _me = strID;
+  _qtdAlias = getQtdAlias();
 }
 
 void Javino::setAlias(String strAlias){
@@ -265,6 +257,7 @@ void Javino::setAlias(String strAlias){
    _me = _me + strAlias; 
   }   
 }
+  _qtdAlias = getQtdAlias();
 }
 
 int Javino::getQtdAlias(){
