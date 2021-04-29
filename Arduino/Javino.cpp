@@ -169,52 +169,76 @@ void Javino::enableRF(int pinTX, int pinRX){
 	vw_rx_start(); 
 }
 
-void Javino::sendMsgRF(String strMsgIn){
-	strMsgIn = "fffe"+int2Hex(strMsgIn.length())+strMsgIn;
-	_x = strMsgIn.length(); 
-	if(_x>70){
-			Serial.println("Sorry! It is only allowed 64 characters!");
-	}else{
-		char charMsgIn[_x];
-		strMsgIn.toCharArray(charMsgIn, _x+1);
-		vw_send((uint8_t *)charMsgIn, _x);
-		vw_wait_tx();
-	}
-}
-
 void Javino::listeningRF(){
-	uint8_t buf[70];
-    uint8_t buflen = 70;
+	uint8_t buf[69];
+    uint8_t buflen = 69;
 	if (vw_get_message(buf, &buflen)){
 	  for (int i=0; i < buflen; i++){
 		 registratorRF(buf[i]);
 	  }  
+	  treatMsgRF();
 	}else{
 		abort();
 	}
 }
 
 void Javino::registratorRF(char byteIn){
-	_arrayMsg[_d]=byteIn;
-    _d++;
-    _x--;
-    _n=5;
+	_d++;
+	if(_d==5){_x=B64toInt(byteIn);}
+	_finalMsg = _finalMsg+byteIn;
+}
 
-	if((_d==4)){
-		if((_arrayMsg[0]!='f')||(_arrayMsg[1]!='f')||(_arrayMsg[2]!='f')||(_arrayMsg[3]!='e')){
-			abort();
-        }
-	}else if(_d==6){
-		_x = sizeOfMsg();
+boolean Javino::preambleRF(String strHeader){
+	int qtdAlias = getQtdAlias();
+	String destgrp  = strHeader.substring(0,2);
+	String destmember = strHeader.substring(2,4);
+  boolean out=false;
+	if(destgrp=="//"){
+		if(destmember=="//"){	
+			out=true; /*broadcast*/
+		}else if(qtdAlias>0){
+			for (int i = 1; i <= qtdAlias; i++) {
+				if(destmember==getMyGroup(i)){
+					out=true; /*multicast*/
+					i=qtdAlias+1;
+				}
+			}
+		}
 	}
+	else if(qtdAlias>0){
+		for (int i = 1; i <= qtdAlias; i++) {
+			if((destgrp+destmember)==getAlias(i).substring(0,4)){
+				out=true; /*unicast*/
+				i=qtdAlias+1;
+			}
+		}
+	}
+  return out;
+}
 
-	if(_x==0){
-		treatMsg();
+void Javino::treatMsgRF(){
+	String header = _finalMsg.substring(0,4);
+	String puremsg = _finalMsg.substring(5,_d);
+	int sizemsgfinal = puremsg.length();
+	
+	if(preambleRF(header)){
+		if(_x==puremsg.length()){
+			_finalMsg=puremsg;
+			_msg=true;
+		}else{
+			_msg=false;
+		}
+	}else{
+		_msg=false;
 	}
+	
 }
 
 boolean Javino::availableMsgRF(){
-    start();
+	_msg=false;
+	_x=0;
+	_d=0;
+	_finalMsg="";
 	listeningRF();
 	return _msg;
 }
@@ -248,6 +272,11 @@ String Javino::getAlias(int i){
   return _me.substring(i,i+4);
 }
 
+String Javino::getMyGroup(int i){
+  i = (i-1)*4;
+  return _me.substring(i,i+2);
+}
+
 String Javino::getId(){
   int x = getQtdAlias();
   String out;
@@ -258,4 +287,168 @@ String Javino::getId(){
     out = out+"["+getAlias(i)+"]";
   }
   return out;
+}
+
+void Javino::sendMsgRF(String strMsgIn){
+	Javino::sendMsgRF("////",strMsgIn);
+}
+
+void Javino::sendMsgRF(String destination, String strMsgIn){
+	strMsgIn = destination+int2B64(strMsgIn.length())+strMsgIn;
+	_x = strMsgIn.length(); 
+	if(_x>68){
+			Serial.println("Sorry! It is only allowed 63 characters!");
+	}else{
+		Serial.println(strMsgIn);
+		char charMsgIn[_x];
+		strMsgIn.toCharArray(charMsgIn, _x+1);
+		vw_send((uint8_t *)charMsgIn, _x);
+		vw_wait_tx();
+	}
+}
+
+String Javino::int2B64(int i){
+	/*Based on RFC4648*/
+	/*https://tools.ietf.org/html/rfc4648*/
+  String vI="A";
+  switch (i) {
+    case 0: vI="A";  break;
+	case 1: vI="B";  break;
+	case 2: vI="C";  break;
+	case 3: vI="D";  break;	
+	case 4: vI="E";  break;
+	case 5: vI="F";  break;
+	case 6: vI="G";  break;
+	case 7: vI="H";  break;
+	case 8: vI="I";  break;
+	case 9: vI="J";  break;
+	case 10: vI="K";  break;
+	case 11: vI="L";  break;	
+	case 12: vI="M";  break;
+	case 13: vI="N";  break;
+	case 14: vI="O";  break;
+	case 15: vI="P";  break;
+	case 16: vI="Q";  break;
+	case 17: vI="R";  break;
+	case 18: vI="S";  break;
+	case 19: vI="T";  break;	
+	case 20: vI="U";  break;
+	case 21: vI="V";  break;
+	case 22: vI="W";  break;
+	case 23: vI="X";  break;
+	case 24: vI="Y";  break;
+	case 25: vI="Z";  break;
+	case 26: vI="a";  break;
+	case 27: vI="b";  break;	
+	case 28: vI="c";  break;
+	case 29: vI="d";  break;
+	case 30: vI="e";  break;
+	case 31: vI="f";  break;
+	case 32: vI="g";  break;
+	case 33: vI="h";  break;
+	case 34: vI="i";  break;
+	case 35: vI="j";  break;	
+	case 36: vI="k";  break;
+	case 37: vI="l";  break;
+	case 38: vI="m";  break;
+	case 39: vI="n";  break;
+	case 40: vI="o";  break;
+	case 41: vI="p";  break;
+	case 42: vI="q";  break;
+	case 43: vI="r";  break;	
+	case 44: vI="s";  break;
+	case 45: vI="t";  break;
+	case 46: vI="u";  break;
+	case 47: vI="v";  break;
+	case 48: vI="w";  break;
+	case 49: vI="x";  break;
+	case 50: vI="y";  break;
+	case 51: vI="z";  break;	
+	case 52: vI="0";  break;
+	case 53: vI="1";  break;
+	case 54: vI="2";  break;
+	case 55: vI="3";  break;
+	case 56: vI="4";  break;
+	case 57: vI="5";  break;
+	case 58: vI="6";  break;
+	case 59: vI="7";  break;	
+	case 60: vI="8";  break;
+	case 61: vI="9";  break;
+	case 62: vI="+";  break;
+	case 63: vI="/";  break;
+  }
+  return vI;
+}
+
+int Javino::B64toInt(char s){
+	/*Based on RFC4648*/
+	/*https://tools.ietf.org/html/rfc4648*/
+  int vI=0;
+  switch (s) {
+	case 'A': vI=0; break;
+	case 'B': vI=1; break;
+	case 'C': vI=2; break;
+	case 'D': vI=3; break;
+	case 'E': vI=4; break;
+	case 'F': vI=5; break;
+	case 'G': vI=6; break;
+	case 'H': vI=7; break;
+	case 'I': vI=8; break;
+	case 'J': vI=9; break;
+	case 'K': vI=10; break;
+	case 'L': vI=11; break;
+	case 'M': vI=12; break;
+	case 'N': vI=13; break;
+	case 'O': vI=14; break;
+	case 'P': vI=15; break;
+	case 'Q': vI=16; break;
+	case 'R': vI=17; break;
+	case 'S': vI=18; break;
+	case 'T': vI=19; break;
+	case 'U': vI=20; break;
+	case 'V': vI=21; break;
+	case 'W': vI=22; break;
+	case 'X': vI=23; break;
+	case 'Y': vI=24; break;
+	case 'Z': vI=25; break;
+	case 'a': vI=26; break;
+	case 'b': vI=27; break;
+	case 'c': vI=28; break;
+	case 'd': vI=29; break;
+	case 'e': vI=30; break;
+	case 'f': vI=31; break;
+	case 'g': vI=32; break;
+	case 'h': vI=33; break;
+	case 'i': vI=34; break;
+	case 'j': vI=35; break;
+	case 'k': vI=36; break;
+	case 'l': vI=37; break;
+	case 'm': vI=38; break;
+	case 'n': vI=39; break;
+	case 'o': vI=40; break;
+	case 'p': vI=41; break;
+	case 'q': vI=42; break;
+	case 'r': vI=43; break;
+	case 's': vI=44; break;
+	case 't': vI=45; break;
+	case 'u': vI=46; break;
+	case 'v': vI=47; break;
+	case 'w': vI=48; break;
+	case 'x': vI=49; break;
+	case 'y': vI=50; break;
+	case 'z': vI=51; break;
+	case '0': vI=52; break;
+	case '1': vI=53; break;
+	case '2': vI=54; break;
+	case '3': vI=55; break;
+	case '4': vI=56; break;
+	case '5': vI=57; break;
+	case '6': vI=58; break;
+	case '7': vI=59; break;
+	case '8': vI=60; break;
+	case '9': vI=61; break;
+	case '+': vI=62; break;
+	case '/': vI=63; break;
+  }
+  return vI;
 }

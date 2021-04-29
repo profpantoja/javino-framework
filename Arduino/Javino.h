@@ -25,6 +25,7 @@ class Javino
     boolean availableMsg();
 	void enableRF(int pinTX, int pinRX);
 	void sendMsgRF(String msg);
+	void sendMsgRF(String destino, String msg);
 	boolean availableMsgRF();
 	void setId(String strID);
 	void setAlias(String strAlias);
@@ -54,5 +55,10 @@ class Javino
 	void listeningRF();
 	int getQtdAlias();
 	String getAlias(int i);
+	String int2B64(int i);
+	int B64toInt(char s);
+	void treatMsgRF();
+	boolean preambleRF(String strHeader);
+	String getMyGroup(int i);
 };
 #endif
