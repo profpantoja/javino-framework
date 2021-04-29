@@ -1,26 +1,44 @@
 #include <Javino.h>
 Javino j;
 String m;
+String strI;
 int i;
+int x;
 void setup() {
   Serial.begin(9600);
   j.enableRF(12,11);
 }
 
 void loop(){
+  x++;
   i=random(1,1000);
   delay(i);
-  m=i+" Mensagem broadcast na rede VANET";
+  strI=String(i);
+  m=strI+";B;Broadcast na rede VANET";
+  strI=String(x);
+  m=strI+";"+m;
+  Serial.println(m);
   j.sendMsgRF(m);
-
+  
+  x++;
   i=random(1,1000);
   delay(i);
-  m=i+" Mensagem multicast na rede VANET para grupo (NF)";
+  strI=String(i);
+  m=strI+";B;Multicast na rede VANET para grupo (NF)";
+  strI=String(x);
+  m=strI+";"+m;
+  Serial.println(m);
   j.sendMsgRF("//NF",m);
 
-
+  x++;
   i=random(1,1000);
   delay(i);
-  m=i+" Mensagem unicast na rede VANET para o usuário (DU) no grupo (KA)";
+  strI=String(i);
+  m=strI+";B;Unicast na rede VANET usuário (DU) grupo (KA)";
+  strI=String(x);
+  m=strI+";"+m;
+  Serial.println(m);
   j.sendMsgRF("KADU",m);
+  
+  if(x>1024){x=0;};
   }
