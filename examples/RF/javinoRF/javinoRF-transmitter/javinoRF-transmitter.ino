@@ -14,7 +14,7 @@ void loop(){
   i=random(1,1000);
   delay(i);
   strI=String(i);
-  m=strI+";Broadcast na rede VANET";
+  m=strI+";B;Broadcast na rede VANET";
   strI=String(x);
   m=strI+";"+m;
   Serial.println(m);
@@ -24,7 +24,7 @@ void loop(){
   i=random(1,1000);
   delay(i);
   strI=String(i);
-  m=strI+";Multicast na rede VANET para grupo (NF)";
+  m=strI+";B;Multicast na rede VANET para grupo (NF)";
   strI=String(x);
   m=strI+";"+m;
   Serial.println(m);
@@ -34,7 +34,7 @@ void loop(){
   i=random(1,1000);
   delay(i);
   strI=String(i);
-  m=strI+";Unicast na rede VANET usuário (DU) grupo (KA)";
+  m=strI+";B;Unicast na rede VANET usuário (DU) grupo (KA)";
   strI=String(x);
   m=strI+";"+m;
   Serial.println(m);
