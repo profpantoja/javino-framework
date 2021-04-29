@@ -10,7 +10,7 @@
 // $Id: receiver.pde,v 1.3 2009/03/30 00:07:24 mikem Exp $
 
 #include <VirtualWire.h>
-
+String m;
 void setup()
 {
     Serial.begin(9600);  // Debugging only
@@ -26,6 +26,7 @@ void setup()
 
 void loop()
 {
+    m="";
     uint8_t buf[VW_MAX_MESSAGE_LEN];
     uint8_t buflen = VW_MAX_MESSAGE_LEN;
 
@@ -33,16 +34,16 @@ void loop()
     {
   int i;
 
-        digitalWrite(13, true); // Flash a light to show received good message
+//  digitalWrite(13, true); // Flash a light to show received good message
   // Message with a good checksum received, dump it.
-  Serial.print("Got: ");
+//  Serial.print("Got: ");
   
   for (i = 0; i < buflen; i++)
   {
-     Serial.print(buf[i], HEX);
-     Serial.print(" ");
+     m=m+String((char)buf[i]);
   }
-  Serial.println("");
+  
+  Serial.println(m);
         digitalWrite(13, false);
     }
 }

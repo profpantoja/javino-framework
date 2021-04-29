@@ -226,9 +226,13 @@ void Javino::treatMsgRF(){
 			_finalMsg=puremsg;
 			_msg=true;
 		}else{
+			//Serial.println("tamanho");
+			//Serial.println(_finalMsg);
 			_msg=false;
 		}
 	}else{
+		 //Serial.println("cabeçalho");
+		 //Serial.println(_finalMsg);
 		_msg=false;
 	}
 	
