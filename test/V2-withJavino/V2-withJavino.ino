@@ -2,6 +2,7 @@
 Javino j;
 int msgId=0;
 void setup() {
+  pinMode(13,OUTPUT);
   Serial.begin(9600);
   j.enableRF(12,11);
   delay(425);
