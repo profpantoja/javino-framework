@@ -299,7 +299,6 @@ void Javino::sendMsgRF(String destination, String strMsgIn){
 	if(_x>68){
 			Serial.println("Sorry! It is only allowed 63 characters!");
 	}else{
-		Serial.println(strMsgIn);
 		char charMsgIn[_x];
 		strMsgIn.toCharArray(charMsgIn, _x+1);
 		vw_send((uint8_t *)charMsgIn, _x);
