@@ -1,12 +1,12 @@
 /*
   Javino.cpp - Library communication for Arduino and Jason.
-Version Stable 1.1
-  Created by Lazarin, NM and Pantoja, CE - January 29, 2015.
-	nilson.lazarin@cefet-rj.br
+	Version Stable 2.0
+    Created by Lazarin, NM and Pantoja, CE - January 29, 2015.
+    nilson.lazarin@cefet-rj.br
 	carlos.pantoja@cefet-rj.br
 
-  Updated in 2015-06-21
-  Released into the public domain.
+  Updated in 2021-05-12
+
 */
 
 #include "Arduino.h"
@@ -180,13 +180,13 @@ void Javino::enableRF(int pinTX, int pinRX){
 }
 
 void Javino::listeningRF(){
-	uint8_t buf[138];
-    uint8_t buflen = 138;
+	uint8_t buf[100];
+    uint8_t buflen = 100;
 	if (vw_get_message(buf, &buflen)){
 	  for (int i=0; i < buflen; i++){
 		if(i==4){
 			_msg = preambleRF(_finalMsg);
-			if(!_msg){i=140;}
+			if(!_msg){i=101;}
 		}
 		registratorRF(buf[i]);
 	  }
@@ -310,8 +310,8 @@ void Javino::sendMsgRF(String destination, String strMsgIn){
 	if(_me!=""){strSource=getAlias(1);}
 	strMsgIn = destination+strSource+sizeMSG_B64(strMsgIn.length()*8)+strMsgIn;
 	_x = strMsgIn.length(); 
-	if(_x>68){
-			Serial.println("Sorry! It is only allowed 63 characters!");
+	if(_x>74){
+			Serial.println("Sorry! It is only allowed 64 characters!");
 	}else{
 		char charMsgIn[_x];
 		strMsgIn.toCharArray(charMsgIn, _x+1);
