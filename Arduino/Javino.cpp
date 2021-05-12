@@ -29,6 +29,16 @@ String Javino::getMsg()
    return _finalMsg;
 }
 
+String Javino::getSrc()
+{
+   return _srcMsg;
+}
+
+String Javino::getDst()
+{
+   return _dstMsg;
+}
+
 boolean Javino::availableMsg(){
     start();
 	listening();  //removido da função start...
@@ -190,7 +200,8 @@ void Javino::listeningRF(){
 
 void Javino::registratorRF(char byteIn){
 	_d++;
-	if(_d==5){_x=B64toInt(byteIn);}
+	if(_d==9){_x=B64toInt(byteIn)*64;}
+	if(_d==10){_x=_x+B64toInt(byteIn);}
 	_finalMsg = _finalMsg+byteIn;
 }
 
@@ -221,8 +232,10 @@ boolean Javino::preambleRF(String strHeader){
 }
 
 void Javino::treatMsgRF(){
-	if(_x==(_d-5)){
-		_finalMsg=_finalMsg.substring(5,_d);
+	if(_x==((_d-10)*8)){
+		_dstMsg=_finalMsg.substring(0,4);
+		_srcMsg=_finalMsg.substring(4,8);
+		_finalMsg=_finalMsg.substring(10,_d);
 		_msg=true;
 	}else{
 		_msg=false;
@@ -234,6 +247,8 @@ boolean Javino::availableMsgRF(){
 	_x=0;
 	_d=0;
 	_finalMsg="";
+	_srcMsg="";
+	_dstMsg="";
 	listeningRF();
 	return _msg;
 }
@@ -294,7 +309,6 @@ void Javino::sendMsgRF(String destination, String strMsgIn){
 	String strSource="////";
 	if(_me!=""){strSource=getAlias(1);}
 	strMsgIn = destination+strSource+sizeMSG_B64(strMsgIn.length()*8)+strMsgIn;
-	Serial.println(strMsgIn);
 	_x = strMsgIn.length(); 
 	if(_x>68){
 			Serial.println("Sorry! It is only allowed 63 characters!");

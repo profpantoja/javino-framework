@@ -8,6 +8,11 @@ void setup() {
 
 void loop() {
   if(j.availableMsgRF()){
+    Serial.print("TO: ");
+    Serial.println(j.getDst());
+    Serial.print("FROM: ");
+    Serial.println(j.getSrc());
+    Serial.print("MSG: ");
     Serial.println(j.getMsg());
   }
 }

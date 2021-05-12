@@ -22,6 +22,8 @@ class Javino
     Javino();
     void sendMsg(String msg);
     String getMsg();
+	String getSrc();
+	String getDst();
     boolean availableMsg();
 	void enableRF(int pinTX, int pinRX);
 	void sendMsgRF(String msg);
@@ -37,6 +39,8 @@ class Javino
 	char _arrayMsg[sizeOfArrayMsg];
 	boolean _msg;
 	String _finalMsg;
+	String _srcMsg;
+	String _dstMsg;
 	String int2Hex(int v);
 	String _me;
 	int _qtdAlias=0;
