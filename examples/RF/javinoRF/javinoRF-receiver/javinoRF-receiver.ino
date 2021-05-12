@@ -7,7 +7,8 @@ void setup() {
 }
 
 void loop() {
-  if(j.availableMsgRF()){
+   if(j.availableMsgRF()){
+    digitalWrite(7,HIGH);
     Serial.print("TO: ");
     Serial.println(j.getDst());
     Serial.print("FROM: ");

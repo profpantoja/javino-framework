@@ -175,18 +175,18 @@ void Javino::enableRF(int pinTX, int pinRX){
 	vw_set_tx_pin(pinTX);
 	pinMode(pinRX, INPUT);
 	vw_set_rx_pin(pinRX);
-	vw_setup(4096);
+	vw_setup(2048);
 	vw_rx_start(); 
 }
 
 void Javino::listeningRF(){
-	uint8_t buf[69];
-    uint8_t buflen = 69;
+	uint8_t buf[138];
+    uint8_t buflen = 138;
 	if (vw_get_message(buf, &buflen)){
 	  for (int i=0; i < buflen; i++){
 		if(i==4){
 			_msg = preambleRF(_finalMsg);
-			if(!_msg){i=70;}
+			if(!_msg){i=140;}
 		}
 		registratorRF(buf[i]);
 	  }
@@ -317,6 +317,7 @@ void Javino::sendMsgRF(String destination, String strMsgIn){
 		strMsgIn.toCharArray(charMsgIn, _x+1);
 		vw_send((uint8_t *)charMsgIn, _x);
 		vw_wait_tx();
+		delay(50);
 	}
 }
 

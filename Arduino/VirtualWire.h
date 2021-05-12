@@ -289,7 +289,7 @@
 
 #ifndef VW_MAX_MESSAGE_LEN 
 /// Maximum number of bytes in a message, counting the byte count and FCS
-	#define VW_MAX_MESSAGE_LEN 80
+	#define VW_MAX_MESSAGE_LEN 103
 #endif //VW_MAX_MESSAGE_LEN 
 
 #if !defined(VW_RX_SAMPLES_PER_BIT)
