@@ -291,7 +291,10 @@ void Javino::sendMsgRF(String strMsgIn){
 }
 
 void Javino::sendMsgRF(String destination, String strMsgIn){
-	strMsgIn = destination+int2B64(strMsgIn.length())+strMsgIn;
+	String strSource="////";
+	if(_me!=""){strSource=getAlias(1);}
+	strMsgIn = destination+strSource+sizeMSG_B64(strMsgIn.length()*8)+strMsgIn;
+	Serial.println(strMsgIn);
 	_x = strMsgIn.length(); 
 	if(_x>68){
 			Serial.println("Sorry! It is only allowed 63 characters!");
@@ -447,4 +450,14 @@ int Javino::B64toInt(char s){
 	case '/': vI=63; break;
   }
   return vI;
+}
+
+String Javino::sizeMSG_B64(int x){
+	String outMSG_B64 = "AA";
+	if(x>=0 && x<=4095){	
+		int d = x/64;
+		int r = x - (d*64);
+		outMSG_B64=int2B64(d)+int2B64(r);
+	}
+	return outMSG_B64;
 }

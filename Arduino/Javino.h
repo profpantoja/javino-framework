@@ -61,5 +61,6 @@ class Javino
 	void treatMsgRF();
 	boolean preambleRF(String strHeader);
 	String getMyGroup(int i);
+	String sizeMSG_B64(int x);
 };
 #endif
