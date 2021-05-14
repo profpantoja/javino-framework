@@ -60,10 +60,10 @@ class Javino
 	int getQtdAlias();
 	String getAlias(int i);
 	String int2B64(int i);
-	int B64toInt(char s);
+	int b64toInt(char s);
 	void treatMsgRF();
 	boolean preambleRF(String strHeader);
 	String getMyGroup(int i);
-	String sizeMSG_B64(int x);
+	String sizeMsgB64(int x);
 };
 #endif
