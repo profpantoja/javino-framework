@@ -152,9 +152,9 @@ int Javino::forInt(char v){
   return vI;
 }
 
-String Javino::char2String(char in[], int sizein){
+String Javino::char2String(char in[], int sizeIn){
   String output;
-  for(int i=6;i<sizein;i++){
+  for(int i=6;i<sizeIn;i++){
     output=output+in[i];
   }
   return output;
@@ -200,8 +200,8 @@ void Javino::listeningRF(){
 
 void Javino::registratorRF(char byteIn){
 	_d++;
-	if(_d==9){_x=B64toInt(byteIn)*64;}
-	if(_d==10){_x=_x+B64toInt(byteIn);}
+	if(_d==9){_x=b64toInt(byteIn)*64;}
+	if(_d==10){_x=_x+b64toInt(byteIn);}
 	_finalMsg = _finalMsg+byteIn;
 }
 
@@ -308,7 +308,7 @@ void Javino::sendMsgRF(String strMsgIn){
 void Javino::sendMsgRF(String destination, String strMsgIn){
 	String strSource="////";
 	if(_me!=""){strSource=getAlias(1);}
-	strMsgIn = destination+strSource+sizeMSG_B64(strMsgIn.length()*8)+strMsgIn;
+	strMsgIn = destination+strSource+sizeMsgB64(strMsgIn.length()*8)+strMsgIn;
 	_x = strMsgIn.length(); 
 	if(_x>74){
 			Serial.println("Sorry! It is only allowed 64 characters!");
@@ -394,7 +394,7 @@ String Javino::int2B64(int i){
   return vI;
 }
 
-int Javino::B64toInt(char s){
+int Javino::b64toInt(char s){
 	/*Based on RFC4648*/
 	/*https://tools.ietf.org/html/rfc4648*/
   int vI=0;
@@ -467,12 +467,12 @@ int Javino::B64toInt(char s){
   return vI;
 }
 
-String Javino::sizeMSG_B64(int x){
-	String outMSG_B64 = "AA";
+String Javino::sizeMsgB64(int x){
+	String outMsgB64 = "AA";
 	if(x>=0 && x<=4095){	
 		int d = x/64;
 		int r = x - (d*64);
-		outMSG_B64=int2B64(d)+int2B64(r);
+		outMsgB64=int2B64(d)+int2B64(r);
 	}
-	return outMSG_B64;
+	return outMsgB64;
 }
