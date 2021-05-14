@@ -119,7 +119,7 @@ public class Javino {
 		if (port != null) {
 			if (receiver != null) {
 				if (content != null) {
-					String diffusionMessage = receiver + this.intToB64(content.length()) + content;
+					String diffusionMessage = receiver + this.getMsgSizeInB64(content.length()) + content;
 					if (diffusionMessage.length() > 64)
 						return this.sendCommand(port, diffusionMessage);
 					else
@@ -387,6 +387,11 @@ public class Javino {
 			cont++;
 		}
 		return String.valueOf(output);
+	}
+	
+	private String getMsgSizeInB64(int msgSize) {
+		int msgInBits = msgSize * 8;
+		return intToB64(msgInBits);
 	}
 
 	private String intToB64(int amount) {
