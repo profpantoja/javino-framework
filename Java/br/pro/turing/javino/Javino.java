@@ -120,7 +120,7 @@ public class Javino {
 			if (receiver != null) {
 				if (content != null) {
 					String diffusionMessage = receiver + this.getMsgSizeInB64(content.length()) + content;
-					if (diffusionMessage.length() > 64)
+					if (diffusionMessage.length() <= 511)
 						return this.sendCommand(port, diffusionMessage);
 					else
 						System.out.println("[JAVINO] The message must have at most 64 characters "
@@ -391,7 +391,11 @@ public class Javino {
 	
 	private String getMsgSizeInB64(int msgSize) {
 		int msgInBits = msgSize * 8;
-		return intToB64(msgInBits);
+		if(msgInBits<=4096) {
+			int numerador = msgInBits/64;
+			int resto = msgInBits % 64;
+			return this.intToB64(numerador)+this.intToB64(resto);
+		} return "AA";
 	}
 
 	private String intToB64(int amount) {

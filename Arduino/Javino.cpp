@@ -1,5 +1,5 @@
 /*
-  Javino.cpp - Library communication for Arduino and Jason.
+  Javino.cpp - Communication Library for Arduino and Jason.
 	Version Stable 2.0
     Created by Lazarin, NM and Pantoja, CE - January 29, 2015.
     nilson.lazarin@cefet-rj.br
