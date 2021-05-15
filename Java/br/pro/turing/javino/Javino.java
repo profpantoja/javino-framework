@@ -121,7 +121,7 @@ public class Javino {
 				if (content != null) {
 					String diffusionMessage = receiver + this.getMsgSizeInB64(content.length()) + content;
 					if (diffusionMessage.length() > 64)
-						return this.sendCommand(port, diffusionMessage);
+						return this.sendMessage(port, diffusionMessage);
 					else
 						System.out.println("[JAVINO] The message must have at most 64 characters "
 								+ "including sender, receiver, and the content.");
@@ -147,6 +147,49 @@ public class Javino {
 			command[2] = operation;
 			command[3] = port;
 			command[4] = prepareToSend(message);
+			ProcessBuilder pBuilder = new ProcessBuilder(command);
+			pBuilder.redirectErrorStream(true);
+			try {
+				Process p = pBuilder.start();
+				p.waitFor();
+				BufferedReader output = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				if (p.exitValue() == 0) {
+					result = true;
+					lockPort(false, port);
+				} else {
+					String line = null;
+					String out = "";
+					while ((line = output.readLine()) != null) {
+						out = out + line;
+					}
+					System.out.println("[JAVINO] Fatal error! [" + out + "]");
+					result = false;
+					lockPort(false, port);
+				}
+			} catch (IOException | InterruptedException e) {
+				System.out.println("[JAVINO] Error on command execution!");
+				e.printStackTrace();
+				result = false;
+				lockPort(false, port);
+			}
+		}
+		return result;
+
+	}
+
+	public boolean sendMessage(String port, String message) {
+		boolean result;
+		if (portLocked(port)) {
+			result = false;
+		} else {
+			lockPort(true, port);
+			String operation = "command";
+			String[] command = new String[5];
+			command[0] = this.pythonPlataform;
+			command[1] = "javython.py";
+			command[2] = operation;
+			command[3] = port;
+			command[4] = message;
 			ProcessBuilder pBuilder = new ProcessBuilder(command);
 			pBuilder.redirectErrorStream(true);
 			try {
@@ -391,7 +434,12 @@ public class Javino {
 	
 	private String getMsgSizeInB64(int msgSize) {
 		int msgInBits = msgSize * 8;
-		return intToB64(msgInBits);
+		if(msgInBits <= 4096) {
+			int rest = msgInBits % 64;
+			int numerator = msgInBits / 64;
+			return this.intToB64(numerator) + this.intToB64(rest);
+		}
+		return "AA";
 	}
 
 	private String intToB64(int amount) {
