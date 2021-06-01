@@ -1,9 +1,9 @@
-package javino.model;
+package javino.enums;
 
 import javino.exception.BaseConversionException;
 
 /** Classe enumerável para o números na base 16. */
-public enum  Base16Enum {
+public enum Base16 {
 
     /** Elemento 0 da base 16. */
     B16_0("0", 0),
@@ -71,7 +71,7 @@ public enum  Base16Enum {
      * @param element {@link #element}
      * @param intValue {@link #intValue}
      */
-    Base16Enum(String element, int intValue) {
+    Base16(String element, int intValue) {
         this.element = element;
         this.intValue = intValue;
     }
@@ -83,8 +83,8 @@ public enum  Base16Enum {
      * @return {@code #Base16Enum} Valor convertido para a base 16 ou {@code #null} caso não exista elemento com o
      * valor inteiro recebido.
      */
-    public static Base16Enum getByIntValue(int intValue) throws BaseConversionException {
-        for (Base16Enum base16Enum : values()) {
+    public static Base16 getByIntValue(int intValue) throws BaseConversionException {
+        for (Base16 base16Enum : values()) {
             if (base16Enum.getIntValue() == intValue) {
                 return base16Enum;
             }
@@ -98,8 +98,8 @@ public enum  Base16Enum {
      * @return {@code #Base16Enum} Elemento convertido para a base 16 ou {@code #null} caso não exista este elemento
      * String recebido.
      */
-    public static Base16Enum getByElement(String element) throws BaseConversionException {
-        for (Base16Enum base16Enum : values()) {
+    public static Base16 getByElement(String element) throws BaseConversionException {
+        for (Base16 base16Enum : values()) {
             if (base16Enum.getElement().equalsIgnoreCase(element)) {
                 return base16Enum;
             }

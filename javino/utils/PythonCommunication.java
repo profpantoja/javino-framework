@@ -1,7 +1,7 @@
 package javino.utils;
 
-import javino.model.JavinoConstants;
-import javino.model.OperationSystemEnum;
+import javino.constants.JavinoConstants;
+import javino.enums.OperationalSystem;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /** Utility class for communicating with Python. */
-public class PythonCommunicationUtils {
+public class PythonCommunication {
 
     /** Extension of files developed in the Python language. */
     private static final String PYTHON_FILE_EXTENSION = "py";
@@ -55,12 +55,12 @@ public class PythonCommunicationUtils {
      *
      * @return {@code #OperationSystemEnum} Enumerable for the Operating System that Javino works with.
      */
-    private static OperationSystemEnum whichOperationalSystem() {
+    private static OperationalSystem whichOperationalSystem() {
         String os = System.getProperty(OPERATION_SYSTEM_NAME_STRING_PROPERTY);
-        if (os.startsWith(OperationSystemEnum.WINDOWS.getName().substring(0,1))) {
-            return OperationSystemEnum.WINDOWS;
+        if (os.startsWith(OperationalSystem.WINDOWS.getName().substring(0,1))) {
+            return OperationalSystem.WINDOWS;
         } else {
-            return OperationSystemEnum.LINUX;
+            return OperationalSystem.LINUX;
         }
     }
 
@@ -69,8 +69,8 @@ public class PythonCommunicationUtils {
      *
      * @param os {@code #OperationSystemEnum} Enumerable for the Operating System that Javino works with.
      */
-    private static String getPath(OperationSystemEnum os) {
-        if (OperationSystemEnum.WINDOWS.equals(os)) {
+    private static String getPath(OperationalSystem os) {
+        if (OperationalSystem.WINDOWS.equals(os)) {
             return PYTHON_DEFAULT_PATH_OS_WINDOWS + PYTHON_FILE_NAME_OS_WINDOWS;
         } else {
             return PYTHON_DEFAULT_PATH_OS_LINUX + PYTHON_FILE_NAME_OS_LINUX;
@@ -83,8 +83,8 @@ public class PythonCommunicationUtils {
      * @param os           {@code #OperationSystemEnum} Enumerable for the Operating System that Javino works with.
      * @param specificPath Specified path of the executable file.
      */
-    private static String getPath(OperationSystemEnum os, String specificPath) {
-        if (OperationSystemEnum.WINDOWS.equals(os)) {
+    private static String getPath(OperationalSystem os, String specificPath) {
+        if (OperationalSystem.WINDOWS.equals(os)) {
             return specificPath + PYTHON_FILE_NAME_OS_WINDOWS;
         } else {
             return specificPath + PYTHON_FILE_NAME_OS_LINUX;
@@ -136,7 +136,7 @@ public class PythonCommunicationUtils {
     public static String load() {
         unlock();
         System.out.println("[JAVINO] Hello, You are using version " + JavinoConstants.VERSION + " - CEFET/RJ, Brazil");
-        final String path = PythonCommunicationUtils.getPath(whichOperationalSystem());
+        final String path = PythonCommunication.getPath(whichOperationalSystem());
         createPythonFile();
         return path;
     }

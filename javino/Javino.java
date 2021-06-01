@@ -1,21 +1,18 @@
 package javino;
 
 import javino.exception.BaseConversionException;
-import javino.model.Base16Enum;
-import javino.model.Base64Enum;
-import javino.model.JavinoConstants;
-import javino.model.OperationEnum;
-import javino.utils.ConversionUtils;
-import javino.utils.PythonCommunicationUtils;
+import javino.enums.Base16;
+import javino.enums.Base64;
+import javino.enums.OperationMode;
+import javino.constants.JavinoConstants;
+import javino.utils.Conversion;
+import javino.utils.PythonCommunication;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 
-/** Classe Princial do Javino. */
+/** Classe Principal do Javino. */
 public class Javino {
 
 	/** Caminho completo do arquivo executável do Python. */
@@ -28,7 +25,7 @@ public class Javino {
 	 * Construtor.
 	 */
 	public Javino() {
-		this.pythonPlataform = PythonCommunicationUtils.load();
+		this.pythonPlataform = PythonCommunication.load();
 	}
 
 	/**
@@ -37,7 +34,7 @@ public class Javino {
 	 * @param pathPython Caminho específico do arquivo executável do Python.
 	 */
 	public Javino(String pathPython) {
-		this.pythonPlataform = PythonCommunicationUtils.load(pathPython);
+		this.pythonPlataform = PythonCommunication.load(pathPython);
 	}
 
 	public String decodeDiffusion(String message) {
@@ -55,7 +52,7 @@ public class Javino {
 				if (content != null) {
 					String diffusionMessage = "";
 					try {
-						diffusionMessage = receiver + Base64Enum.getMsgSize(content.length()) + content;
+						diffusionMessage = receiver + Base64.getMsgSize(content.length()) + content;
 					} catch (BaseConversionException e) {
 						e.printStackTrace();
 					}
@@ -75,16 +72,16 @@ public class Javino {
 
 	public boolean sendCommand(String port, String message) {
 		boolean result;
-		if (PythonCommunicationUtils.portLocked(port)) {
+		if (PythonCommunication.portLocked(port)) {
 			result = false;
 		} else {
-			PythonCommunicationUtils.lockPort(true, port);
+			PythonCommunication.lockPort(true, port);
 			String[] command = new String[5];
 			command[0] = this.pythonPlataform;
 			command[1] = JavinoConstants.PYTHON_FILE_NAME;
-			command[2] = OperationEnum.COMMAND.getName();
+			command[2] = OperationMode.COMMAND.getName();
 			command[3] = port;
-			command[4] = ConversionUtils.prepareToSend(message);
+			command[4] = Conversion.prepareToSend(message);
 			ProcessBuilder pBuilder = new ProcessBuilder(command);
 			pBuilder.redirectErrorStream(true);
 			try {
@@ -93,7 +90,7 @@ public class Javino {
 				BufferedReader output = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				if (p.exitValue() == 0) {
 					result = true;
-					PythonCommunicationUtils.lockPort(false, port);
+					PythonCommunication.lockPort(false, port);
 				} else {
 					String line = null;
 					String out = "";
@@ -102,13 +99,13 @@ public class Javino {
 					}
 					System.out.println("[JAVINO] Fatal error! [" + out + "]");
 					result = false;
-					PythonCommunicationUtils.lockPort(false, port);
+					PythonCommunication.lockPort(false, port);
 				}
 			} catch (IOException | InterruptedException e) {
 				System.out.println("[JAVINO] Error on command execution!");
 				e.printStackTrace();
 				result = false;
-				PythonCommunicationUtils.lockPort(false, port);
+				PythonCommunication.lockPort(false, port);
 			}
 		}
 		return result;
@@ -117,14 +114,14 @@ public class Javino {
 
 	public boolean sendMessage(String port, String message) {
 		boolean result;
-		if (PythonCommunicationUtils.portLocked(port)) {
+		if (PythonCommunication.portLocked(port)) {
 			result = false;
 		} else {
-			PythonCommunicationUtils.lockPort(true, port);
+			PythonCommunication.lockPort(true, port);
 			String[] command = new String[5];
 			command[0] = this.pythonPlataform;
 			command[1] = JavinoConstants.PYTHON_FILE_NAME;
-			command[2] = OperationEnum.COMMAND.getName();
+			command[2] = OperationMode.COMMAND.getName();
 			command[3] = port;
 			command[4] = message;
 			ProcessBuilder pBuilder = new ProcessBuilder(command);
@@ -135,7 +132,7 @@ public class Javino {
 				BufferedReader output = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				if (p.exitValue() == 0) {
 					result = true;
-					PythonCommunicationUtils.lockPort(false, port);
+					PythonCommunication.lockPort(false, port);
 				} else {
 					String line = null;
 					String out = "";
@@ -144,13 +141,13 @@ public class Javino {
 					}
 					System.out.println("[JAVINO] Fatal error! [" + out + "]");
 					result = false;
-					PythonCommunicationUtils.lockPort(false, port);
+					PythonCommunication.lockPort(false, port);
 				}
 			} catch (IOException | InterruptedException e) {
 				System.out.println("[JAVINO] Error on command execution!");
 				e.printStackTrace();
 				result = false;
-				PythonCommunicationUtils.lockPort(false, port);
+				PythonCommunication.lockPort(false, port);
 			}
 		}
 		return result;
@@ -159,16 +156,16 @@ public class Javino {
 
 	public boolean listenController(String PORT) {
 		boolean result;
-		if (PythonCommunicationUtils.portLocked(PORT)) {
+		if (PythonCommunication.portLocked(PORT)) {
 			result = false;
 		} else {
-			PythonCommunicationUtils.lockPort(true, PORT);
+			PythonCommunication.lockPort(true, PORT);
 			String[] command = new String[5];
 			command[0] = this.pythonPlataform;
 			command[1] = JavinoConstants.PYTHON_FILE_NAME;
-			command[2] = OperationEnum.LISTEN.getName();
+			command[2] = OperationMode.LISTEN.getName();
 			command[3] = PORT;
-			command[4] = OperationEnum.LISTEN.getName();
+			command[4] = OperationMode.LISTEN.getName();
 			ProcessBuilder pBuilder = new ProcessBuilder(command);
 			pBuilder.redirectErrorStream(true);
 			try {
@@ -177,7 +174,7 @@ public class Javino {
 				BufferedReader array = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				if (p.exitValue() == 0) {
 					result = setArryMsg(array);
-					PythonCommunicationUtils.lockPort(false, PORT);
+					PythonCommunication.lockPort(false, PORT);
 				} else {
 					String line;
 					String output = "";
@@ -186,14 +183,14 @@ public class Javino {
 					}
 					System.out.println("[JAVINO] Fatal error! [" + output + "]");
 					result = false;
-					PythonCommunicationUtils.lockPort(false, PORT);
+					PythonCommunication.lockPort(false, PORT);
 				}
 
 			} catch (IOException | InterruptedException e) {
 				System.out.println("[JAVINO] Error on listening the microcontrolled board.");
 				e.printStackTrace();
 				result = false;
-				PythonCommunicationUtils.lockPort(false, PORT);
+				PythonCommunication.lockPort(false, PORT);
 			}
 		}
 		return result;
@@ -201,16 +198,16 @@ public class Javino {
 
 	public boolean requestData(String PORT, String MSG) {
 		boolean result;
-		if (PythonCommunicationUtils.portLocked(PORT)) {
+		if (PythonCommunication.portLocked(PORT)) {
 			result = false;
 		} else {
-			PythonCommunicationUtils.lockPort(true, PORT);
+			PythonCommunication.lockPort(true, PORT);
 			String[] command = new String[5];
 			command[0] = this.pythonPlataform;
 			command[1] = JavinoConstants.PYTHON_FILE_NAME;
-			command[2] = OperationEnum.REQUEST.getName();
+			command[2] = OperationMode.REQUEST.getName();
 			command[3] = PORT;
-			command[4] = ConversionUtils.prepareToSend(MSG);
+			command[4] = Conversion.prepareToSend(MSG);
 			ProcessBuilder pBuilder = new ProcessBuilder(command);
 			pBuilder.redirectErrorStream(true);
 			try {
@@ -219,7 +216,7 @@ public class Javino {
 				BufferedReader array = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				if (p.exitValue() == 0) {
 					result = setArryMsg(array);
-					PythonCommunicationUtils.lockPort(false, PORT);
+					PythonCommunication.lockPort(false, PORT);
 				} else {
 					String line = null;
 					String output = "";
@@ -228,14 +225,14 @@ public class Javino {
 					}
 					System.out.println("[JAVINO] Fatal error! [" + output + "]");
 					result = false;
-					PythonCommunicationUtils.lockPort(false, PORT);
+					PythonCommunication.lockPort(false, PORT);
 				}
 
 			} catch (IOException | InterruptedException e) {
 				System.out.println("[JAVINO] Error on listening!");
 				e.printStackTrace();
 				result = false;
-				PythonCommunicationUtils.lockPort(false, PORT);
+				PythonCommunication.lockPort(false, PORT);
 			}
 		}
 		return result;
@@ -272,10 +269,10 @@ public class Javino {
 			char p3 = preArrayMsg[2];
 			char p4 = preArrayMsg[3];
 			if ((p1 == 'f') && (p2 == 'f') && (p3 == 'f') && (p4 == 'e')
-					&& (this.monitorMsg(Base16Enum.getByElement(String.valueOf(preArrayMsg[5])).getIntValue(),
-					Base16Enum.getByElement(String.valueOf(preArrayMsg[4])).getIntValue(),
+					&& (this.monitorMsg(Base16.getByElement(String.valueOf(preArrayMsg[5])).getIntValue(),
+					Base16.getByElement(String.valueOf(preArrayMsg[4])).getIntValue(),
 					preArrayMsg.length))) {
-				setFinalMsg(ConversionUtils.charToString(preArrayMsg, preArrayMsg.length));
+				setFinalMsg(Conversion.charToString(preArrayMsg, preArrayMsg.length));
 				return true;
 			} else {
 				char[] newArrayMsg;
@@ -334,11 +331,11 @@ public class Javino {
 					j = new Javino(path);
 				}
 
-				if (type.equals(OperationEnum.COMMAND.getName())) {
+				if (type.equals(OperationMode.COMMAND.getName())) {
 					if (!j.sendCommand(port, msg)) {
 						System.exit(1);
 					}
-				} else if (type.equals(OperationEnum.REQUEST.getName())) {
+				} else if (type.equals(OperationMode.REQUEST.getName())) {
 					if (j.requestData(port, msg)) {
 						System.out.println(j.getData());
 					} else {

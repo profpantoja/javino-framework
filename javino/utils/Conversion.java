@@ -1,9 +1,9 @@
 package javino.utils;
 
-import javino.model.Base16Enum;
+import javino.enums.Base16;
 
 /** Classe de utilidade de conversão de dados. */
-public class ConversionUtils {
+public class Conversion {
 
     /**
      * Executa a conversão de um vetor de caracteres para uma String.
@@ -31,7 +31,7 @@ public class ConversionUtils {
      * @return {@code #String} Mensagem preparada para o envio com preambulo+tamanho+conteúdo.
      */
     public static String prepareToSend(String msg) {
-        msg = "fffe" + Base16Enum.getMsgSize(msg.length()) + msg;
+        msg = "fffe" + Base16.getMsgSize(msg.length()) + msg;
         return msg;
     }
 

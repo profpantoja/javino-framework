@@ -1,18 +1,15 @@
-package javino.model;
+package javino.enums;
 
-/** Classe enumerável para as operações que podem ser realizadas pelo Javino. */
-public enum OperationEnum {
+/** Classe de enumerável para identificação do Sistema Operacional. */
+public enum OperationalSystem {
 
-    /** Operação de ouvir. */
-    LISTEN("listen"),
+    /** Sistema Operacional Windows. */
+    WINDOWS("WINDOWS"),
 
-    /** Operação para execução de comandos. */
-    COMMAND("command"),
+    /** Sistema Operacional Linux. */
+    LINUX("LINUX");
 
-    /** Operação de requisição. */
-    REQUEST("request");
-
-    /** Nome da operação. */
+    /** Nome do sistema operacional. */
     private String name;
 
     /**
@@ -20,7 +17,7 @@ public enum OperationEnum {
      *
      * @param name {@link #name}
      */
-    OperationEnum(String name) {
+    OperationalSystem(String name) {
         this.name = name;
     }
 

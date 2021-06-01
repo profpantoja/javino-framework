@@ -1,6 +1,6 @@
 package javino.exception;
 
-import javino.model.JavinoConstants;
+import javino.constants.JavinoConstants;
 
 /** Exception class for exceptions in the base conversion. */
 public class BaseConversionException extends Exception {

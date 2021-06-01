@@ -1,4 +1,4 @@
-package javino.model;
+package javino.constants;
 
 /** Classe para centralizar todas as constantes do código do Javino. */
 public class JavinoConstants {

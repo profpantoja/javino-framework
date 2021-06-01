@@ -1,9 +1,10 @@
-package javino.model;
+package javino.enums;
 
+import javino.constants.JavinoConstants;
 import javino.exception.BaseConversionException;
 
 /** Classe enumerável para o números na base 64. */
-public enum Base64Enum {
+public enum Base64 {
 
     /** Elemento A da base 64. */
     B64_A("A", 0),
@@ -215,7 +216,7 @@ public enum Base64Enum {
      * @param element  {@link #element}
      * @param intValue {@link #intValue}
      */
-    Base64Enum(String element, int intValue) {
+    Base64(String element, int intValue) {
         this.element = element;
         this.intValue = intValue;
     }
@@ -227,8 +228,8 @@ public enum Base64Enum {
      * @return {@code #Base64Enum} Valor convertido para a base 64 ou {@code #null} caso não exista elemento com o
      * valor inteiro recebido.
      */
-    public static Base64Enum getByIntValue(int intValue) throws BaseConversionException {
-        for (Base64Enum base64Enum : values()) {
+    public static Base64 getByIntValue(int intValue) throws BaseConversionException {
+        for (Base64 base64Enum : values()) {
             if (base64Enum.getIntValue() == intValue) {
                 return base64Enum;
             }
@@ -243,8 +244,8 @@ public enum Base64Enum {
      * @return {@code #Base64Enum} Elemento convertido para a base 64 ou {@code #null} caso não exista este elemento
      * String recebido.
      */
-    public static Base64Enum getByElement(String element) throws BaseConversionException {
-        for (Base64Enum base64Enum : values()) {
+    public static Base64 getByElement(String element) throws BaseConversionException {
+        for (Base64 base64Enum : values()) {
             if (base64Enum.getElement().equals(element)) {
                 return base64Enum;
             }
@@ -262,11 +263,11 @@ public enum Base64Enum {
     public static String getMsgSize(int msgSize) throws BaseConversionException {
         int msgInBits = msgSize * Byte.SIZE;
         if (msgInBits <= JavinoConstants.MESSAGE_MAX_SIZE_IN_BIT) {
-            int rest = msgInBits % Base64Enum.BASE_VALUE;
-            int numerator = msgInBits / Base64Enum.BASE_VALUE;
-            return Base64Enum.getByIntValue(numerator).getElement() + Base64Enum.getByIntValue(rest).getElement();
+            int rest = msgInBits % Base64.BASE_VALUE;
+            int numerator = msgInBits / Base64.BASE_VALUE;
+            return Base64.getByIntValue(numerator).getElement() + Base64.getByIntValue(rest).getElement();
         }
-        throw new BaseConversionException(msgInBits, Base64Enum.BASE_NAME);
+        throw new BaseConversionException(msgInBits, Base64.BASE_NAME);
     }
 
     /**
