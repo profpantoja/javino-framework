@@ -1,5 +1,7 @@
 package javino.model;
 
+import javino.exception.BaseConversionException;
+
 /** Classe enumerável para o números na base 64. */
 public enum Base64Enum {
 
@@ -201,6 +203,12 @@ public enum Base64Enum {
     /** Valor do elemento da base 64 em inteiro. */
     private int intValue;
 
+    /** Base name. */
+    public static final String BASE_NAME = "Base64";
+
+    /** Base value to convert. */
+    public static final int BASE_VALUE = 64;
+
     /**
      * Construtor.
      *
@@ -219,28 +227,46 @@ public enum Base64Enum {
      * @return {@code #Base64Enum} Valor convertido para a base 64 ou {@code #null} caso não exista elemento com o
      * valor inteiro recebido.
      */
-    public static Base64Enum getByIntValue(int intValue) {
+    public static Base64Enum getByIntValue(int intValue) throws BaseConversionException {
         for (Base64Enum base64Enum : values()) {
             if (base64Enum.getIntValue() == intValue) {
                 return base64Enum;
             }
         }
-        return null;
+        throw new BaseConversionException(intValue, BASE_NAME);
     }
 
     /**
      * Executa a recuperação do elemento na base 64 de acordo com um valor String de um elemento.
+     *
      * @param element Valor String de um elemento.
      * @return {@code #Base64Enum} Elemento convertido para a base 64 ou {@code #null} caso não exista este elemento
      * String recebido.
      */
-    public static Base64Enum getByElement(String element) {
+    public static Base64Enum getByElement(String element) throws BaseConversionException {
         for (Base64Enum base64Enum : values()) {
             if (base64Enum.getElement().equals(element)) {
                 return base64Enum;
             }
         }
-        return null;
+        throw new BaseConversionException(element, BASE_NAME);
+    }
+
+    /**
+     * Executa a recuperação do tamanho da mensagem na base 64 levando em consideração que cada caractere ocupa 1
+     * byte, ou seja 8 bits de memória.
+     *
+     * @param msgSize Tamanho da mensagem em inteiro considerando a quantidade de caracteres.
+     * @return {@code #String} Tamanhoo da mensagem na base 64.
+     */
+    public static String getMsgSize(int msgSize) throws BaseConversionException {
+        int msgInBits = msgSize * Byte.SIZE;
+        if (msgInBits <= JavinoConstants.MESSAGE_MAX_SIZE_IN_BIT) {
+            int rest = msgInBits % Base64Enum.BASE_VALUE;
+            int numerator = msgInBits / Base64Enum.BASE_VALUE;
+            return Base64Enum.getByIntValue(numerator).getElement() + Base64Enum.getByIntValue(rest).getElement();
+        }
+        throw new BaseConversionException(msgInBits, Base64Enum.BASE_NAME);
     }
 
     /**

@@ -1,5 +1,8 @@
 package javino;
 
+import javino.exception.BaseConversionException;
+import javino.model.Base16Enum;
+import javino.model.Base64Enum;
 import javino.model.JavinoConstants;
 import javino.model.OperationEnum;
 import javino.utils.ConversionUtils;
@@ -50,8 +53,13 @@ public class Javino {
 		if (port != null) {
 			if (receiver != null) {
 				if (content != null) {
-					String diffusionMessage = receiver + ConversionUtils.getMsgSizeInB64(content.length()) + content;
-					if (diffusionMessage.length() > 64)
+					String diffusionMessage = "";
+					try {
+						diffusionMessage = receiver + Base64Enum.getMsgSize(content.length()) + content;
+					} catch (BaseConversionException e) {
+						e.printStackTrace();
+					}
+					if (diffusionMessage.length() > JavinoConstants.MESSAGE_MIN_SIZE)
 						return this.sendMessage(port, diffusionMessage);
 					else
 						System.out.println("[JAVINO] The message must have at most 64 characters "
@@ -160,7 +168,7 @@ public class Javino {
 			command[1] = JavinoConstants.PYTHON_FILE_NAME;
 			command[2] = OperationEnum.LISTEN.getName();
 			command[3] = PORT;
-			command[4] = "listen";
+			command[4] = OperationEnum.LISTEN.getName();
 			ProcessBuilder pBuilder = new ProcessBuilder(command);
 			pBuilder.redirectErrorStream(true);
 			try {
@@ -171,7 +179,7 @@ public class Javino {
 					result = setArryMsg(array);
 					PythonCommunicationUtils.lockPort(false, PORT);
 				} else {
-					String line = null;
+					String line;
 					String output = "";
 					while ((line = array.readLine()) != null) {
 						output = output + line;
@@ -200,7 +208,7 @@ public class Javino {
 			String[] command = new String[5];
 			command[0] = this.pythonPlataform;
 			command[1] = JavinoConstants.PYTHON_FILE_NAME;
-			command[2] = OperationEnum.LISTEN.getName();
+			command[2] = OperationEnum.REQUEST.getName();
 			command[3] = PORT;
 			command[4] = ConversionUtils.prepareToSend(MSG);
 			ProcessBuilder pBuilder = new ProcessBuilder(command);
@@ -240,17 +248,17 @@ public class Javino {
 	}
 
 	private boolean setArryMsg(BufferedReader reader) {
-		String line = null;
-		String out = new String();
+		String line;
+		StringBuilder out = new StringBuilder();
 		try {
 			while ((line = reader.readLine()) != null) {
-				out = out + line;
+				out.append(line);
 			}
 		} catch (IOException e) {
 			System.out.println("[JAVINO] Error in message processing.");
 			return false;
 		}
-		return preamble(out.toCharArray());
+		return preamble(out.toString().toCharArray());
 	}
 
 	private void setFinalMsg(String s_msg) {
@@ -264,7 +272,8 @@ public class Javino {
 			char p3 = preArrayMsg[2];
 			char p4 = preArrayMsg[3];
 			if ((p1 == 'f') && (p2 == 'f') && (p3 == 'f') && (p4 == 'e')
-					&& (this.monitorMsg(ConversionUtils.hexToInt(preArrayMsg[5]), ConversionUtils.hexToInt(preArrayMsg[4]),
+					&& (this.monitorMsg(Base16Enum.getByElement(String.valueOf(preArrayMsg[5])).getIntValue(),
+					Base16Enum.getByElement(String.valueOf(preArrayMsg[4])).getIntValue(),
 					preArrayMsg.length))) {
 				setFinalMsg(ConversionUtils.charToString(preArrayMsg, preArrayMsg.length));
 				return true;
@@ -292,7 +301,7 @@ public class Javino {
 		return false;
 	}
 
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		try {
 			String type = args[0];
 			if (type.equals("--help")) {
@@ -325,12 +334,12 @@ public class Javino {
 					j = new Javino(path);
 				}
 
-				if (type.equals("command")) {
-					if (j.sendCommand(port, msg) == false) {
+				if (type.equals(OperationEnum.COMMAND.getName())) {
+					if (!j.sendCommand(port, msg)) {
 						System.exit(1);
 					}
-				} else if (type.equals("request")) {
-					if (j.requestData(port, msg) == true) {
+				} else if (type.equals(OperationEnum.REQUEST.getName())) {
+					if (j.requestData(port, msg)) {
 						System.out.println(j.getData());
 					} else {
 						System.exit(1);

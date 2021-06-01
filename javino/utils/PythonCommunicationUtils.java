@@ -8,36 +8,36 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-/** Classe de utilidade para a comunicação com o Python. */
+/** Utility class for communicating with Python. */
 public class PythonCommunicationUtils {
 
-    /** Extensão dos arquivos desenvolvidos na línguagem Python. */
+    /** Extension of files developed in the Python language. */
     private static final String PYTHON_FILE_EXTENSION = "py";
 
-    /** Extensão dos arquivos travados para escrita. */
+    /** Extension of locked files for writing. */
     private static final String LOCK_FILE_EXTENSION = "lock";
 
-    /** String de propriedade para recuperar o nome do Sistema Operacional atual. */
+    /** Property String to retrieve the name of the current Operating System. */
     private static final String OPERATION_SYSTEM_NAME_STRING_PROPERTY = "os.name";
 
-    /** Caminho padrão do Python instalado no sistema operacional Windows. */
+    /** Standard Python path installed on the Windows operating system. */
     private static final String PYTHON_DEFAULT_PATH_OS_WINDOWS = "C:\\Python27";
 
-    /** Nome do arquivo executável do Python no sistema operacional Windows. */
+    /** Python executable file name on the Windows operating system. */
     private static final String PYTHON_FILE_NAME_OS_WINDOWS = "\\python.exe";
 
-    /** Caminho padrão do Python instalado no sistema operacional Windows. */
+    /** Standard Python path installed on the Windows operating system. */
     private static final String PYTHON_DEFAULT_PATH_OS_LINUX = "/usr/bin";
 
-    /** Nome do arquivo executável do Python no sistema operacional Windows. */
+    /** Python executable file name on the Windows operating system. */
     private static final String PYTHON_FILE_NAME_OS_LINUX = "/python";
 
-
-    /** Ponto. */
+    /** Dot. */
     private static final String DOT = ".";
 
     /**
-     * Procura arquivos com a extensão "py" e "lock" e os deleta na pasta para desbloquear a escrita de um novo.
+     * Searches for files with the extension "py" and "lock" and deletes them in the folder to unlock the writing of
+     * a new one.
      */
     private static void unlock() {
         File folder = new File(DOT);
@@ -51,12 +51,13 @@ public class PythonCommunicationUtils {
     }
 
     /**
-     * Executa a identificação do Sistema operacional que o Javino está sendo utilizado.
-     * @return {@code #OperationSystemEnum} Enúmeravel para o Sistema Operacional que o Javino trabalha.
+     * Performs the identification of the Operating System that Javino is being used.
+     *
+     * @return {@code #OperationSystemEnum} Enumerable for the Operating System that Javino works with.
      */
     private static OperationSystemEnum whichOperationalSystem() {
         String os = System.getProperty(OPERATION_SYSTEM_NAME_STRING_PROPERTY);
-        if (os.startsWith("W")) {
+        if (os.startsWith(OperationSystemEnum.WINDOWS.getName().substring(0,1))) {
             return OperationSystemEnum.WINDOWS;
         } else {
             return OperationSystemEnum.LINUX;
@@ -64,9 +65,9 @@ public class PythonCommunicationUtils {
     }
 
     /**
-     * Executa a recuperação do endereco de onde está instalado o python no sistema operacional.
+     * Performs the recovery of the address where python is installed in the operating system.
      *
-     * @param os {@code #OperationSystemEnum} Enúmeravel para o Sistema Operacional que o Javino trabalha.
+     * @param os {@code #OperationSystemEnum} Enumerable for the Operating System that Javino works with.
      */
     private static String getPath(OperationSystemEnum os) {
         if (OperationSystemEnum.WINDOWS.equals(os)) {
@@ -77,10 +78,10 @@ public class PythonCommunicationUtils {
     }
 
     /**
-     * Executa a recuperação do endereco de onde está instalado o python no sistema operacional.
+     * Performs the recovery of the address where python is installed in the operating system.
      *
-     * @param os {@code #OperationSystemEnum} Enúmeravel para o Sistema Operacional que o Javino trabalha.
-     * @param specificPath Caminho especificado do arquivo executável.
+     * @param os           {@code #OperationSystemEnum} Enumerable for the Operating System that Javino works with.
+     * @param specificPath Specified path of the executable file.
      */
     private static String getPath(OperationSystemEnum os, String specificPath) {
         if (OperationSystemEnum.WINDOWS.equals(os)) {
@@ -91,7 +92,7 @@ public class PythonCommunicationUtils {
     }
 
     /**
-     * Executa a criação do arquivo javython.py.
+     * Performs the creation of the javython.py file.
      */
     private static void createPythonFile() {
         try {
@@ -130,7 +131,7 @@ public class PythonCommunicationUtils {
     }
 
     /**
-     * Executa o carregamento inicial para o Python poder estabelecer a comunicação do Java com o Arduino.
+     * Performs the initial load for Python to be able to establish Java communication with Arduino.
      */
     public static String load() {
         unlock();
@@ -141,8 +142,9 @@ public class PythonCommunicationUtils {
     }
 
     /**
-     * Executa o carregamento inicial para o Python poder estabelecer a comunicação do Java com o Arduino.
-     * @param specificPath Caminho específico do arquivo executável do Python.
+     * Performs the initial load for Python to be able to establish Java communication with Arduino.
+     *
+     * @param specificPath Specific path to the Python executable file.
      */
     public static String load(String specificPath) {
         unlock();
@@ -153,10 +155,10 @@ public class PythonCommunicationUtils {
     }
 
     /**
-     * Executa a recuperação do arquivo lock de escrita.
+     * Performs recovery of the write lock file.
      *
-     * @param PORT Porta serial de comunicação.
-     * @return Arquivo de escrita na parta de comunicação com o Arduino.
+     * @param PORT Serial communication port.
+     * @return {@code #String} Writing file in the communication part with Arduino.
      */
     private static String lockFileName(String PORT) {
         PORT = PORT + DOT + LOCK_FILE_EXTENSION;
@@ -175,9 +177,10 @@ public class PythonCommunicationUtils {
     }
 
     /**
-     * Executa a verificação para identificar se a porta está está ocupada ou livre para uso.
-     * @param lc_PORT Caminho da Porta.
-     * @return {@code #true} Caso a porta esteja Ocupada e {@code #false} caso esteja Livre.
+     * Run the check to identify whether the port is occupied or free for use.
+     *
+     * @param lc_PORT Path to the Door.
+     * @return {@code #true} If the port is Busy and {@code #false} if it is Free.
      */
     public static boolean portLocked(String lc_PORT) {
         boolean busy;
@@ -192,10 +195,11 @@ public class PythonCommunicationUtils {
     }
 
     /**
-     * Executa o trancamento ou destrancamento da porta, criando ou excluindo o arquivo para comunicação do Java com
-     * o Arduino.
-     * @param lock {@code #true} Destranca a porta para a comunicação e {@code #false} Tranca a porta de comunicação.
-     * @param PORT Caminho da porta.
+     * Performs the locking or unlocking of the port, creating or deleting the file for communication between Java
+     * and Arduino.
+     *
+     * @param lock {@code #true} Unlock the communication port and {@code #false} Lock the communication port.
+     * @param PORT port Path.
      */
     public static void lockPort(boolean lock, String PORT) {
         try {
