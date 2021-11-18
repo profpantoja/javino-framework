@@ -21,7 +21,7 @@ pause
 
 
 :inicio
-REM MD %HOMEDRIVE%\%HOMEPATH%\Javino
+MD %HOMEDRIVE%%HOMEPATH%\Javino
 
 cls
 echo Script de instalacao de ambiente do Javino para Windows
@@ -38,11 +38,11 @@ IF "%choice%"=="S" (
 
 :eclipse
 echo Iniciando o Download do Eclipse
-REM bitsadmin /transfer "Download" /download /priority FOREGROUND https://turing.pro.br/kadupantoja/t00ls/javino/W10/eclipse-inst-jre-win64.exe %homedrive%\%homepath%\Javino\eclipse.exe
+bitsadmin /transfer "Download" /download /priority FOREGROUND https://turing.pro.br/kadupantoja/t00ls/javino/W10/eclipse-inst-jre-win64.exe %homedrive%%homepath%\Javino\eclipse.exe
 echo.
 timeout 2 > NUL
 echo Download concluido, iniciando o instalador. Siga as orientacoes do instalador.
-REM %homedrive%\%homepath%\Javino\eclipse.exe
+%homedrive%%homepath%\Javino\eclipse.exe
 timeout 15 > NUL
 echo.
 pause
@@ -62,11 +62,11 @@ IF "%choice%"=="S" (
 
 :jdk
 echo Iniciando o Download do Java JDK 11
-REM bitsadmin /transfer "Download" /download /priority FOREGROUND https://turing.pro.br/kadupantoja/t00ls/javino/W10/jdk-11.0.12_windows-x64_bin.exe %homedrive%\%homepath%\Javino\jdk11.exe
+bitsadmin /transfer "Download" /download /priority FOREGROUND https://turing.pro.br/kadupantoja/t00ls/javino/W10/jdk-11.0.12_windows-x64_bin.exe %homedrive%%homepath%\Javino\jdk11.exe
 echo.
 timeout 2 > NUL
 echo Download concluido, iniciando o instalador. Siga as orientacoes do instalador.
-REM %homedrive%\%homepath%\Javino\jdk11.exe
+%homedrive%%homepath%\Javino\jdk11.exe
 timeout 15 > NUL
 echo.
 pause
@@ -74,8 +74,8 @@ pause
 IF NOT EXIST "%PROGRAMFILES%\Java\jdk-11.0.12\bin\javac.exe" goto varerro
 
 echo Adicionando Variavel de Ambiente JAVA_HOME
-REM SETX /M PATH "%PATH%;%PROGRAMFILES%\Java\jdk-11.0.12\bin"
-REM SETX /M JAVA_HOME "%PROGRAMFILES%\Java\jdk-11.0.12"
+SETX /M PATH "%PATH%;%PROGRAMFILES%\Java\jdk-11.0.12\bin"
+SETX /M JAVA_HOME "%PROGRAMFILES%\Java\jdk-11.0.12"
 goto varok
 
 :varerro
@@ -105,11 +105,11 @@ IF "%choice%"=="S" (
 
 :python
 echo Iniciando o Download do Python 3
-REM bitsadmin /transfer "Download" /download /priority FOREGROUND https://turing.pro.br/kadupantoja/t00ls/javino/W10/python-3.10.0-amd64.exe %homedrive%\%homepath%\Javino\python3.exe
+bitsadmin /transfer "Download" /download /priority FOREGROUND https://turing.pro.br/kadupantoja/t00ls/javino/W10/python-3.10.0-amd64.exe %homedrive%%homepath%\Javino\python3.exe
 echo.
 timeout 2 > NUL
 echo Download concluido, iniciando o instalador. Siga as orientacoes do instalador.
-REM %homedrive%\%homepath%\Javino\python3.exe
+%homedrive%%homepath%\Javino\python3.exe
 timeout 15 > NUL
 echo.
 pause
@@ -122,9 +122,3 @@ echo Fim!
 echo.
 pause
 exit
-
-
-
-
-
-
