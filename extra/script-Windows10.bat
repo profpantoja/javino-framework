@@ -43,7 +43,7 @@ echo.
 timeout 2 > NUL
 echo Download concluido, iniciando o instalador. Siga as orientacoes do instalador.
 %homedrive%%homepath%\Javino\eclipse.exe
-timeout 15 > NUL
+timeout 3 > NUL
 echo.
 pause
 
@@ -67,7 +67,7 @@ echo.
 timeout 2 > NUL
 echo Download concluido, iniciando o instalador. Siga as orientacoes do instalador.
 %homedrive%%homepath%\Javino\jdk11.exe
-timeout 15 > NUL
+timeout 3 > NUL
 echo.
 pause
 
@@ -110,7 +110,7 @@ echo.
 timeout 2 > NUL
 echo Download concluido, iniciando o instalador. Siga as orientacoes do instalador.
 %homedrive%%homepath%\Javino\python3.exe
-timeout 15 > NUL
+timeout 3 > NUL
 echo.
 pause
 
