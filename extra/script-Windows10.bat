@@ -72,10 +72,10 @@ echo.
 pause
 
 IF NOT EXIST "%PROGRAMFILES%\Java\jdk-11.0.12\bin\javac.exe" goto varerro
-
+echo.
 echo Adicionando Variavel de Ambiente JAVA_HOME
-SETX /M PATH "%PATH%;%PROGRAMFILES%\Java\jdk-11.0.12\bin"
-SETX /M JAVA_HOME "%PROGRAMFILES%\Java\jdk-11.0.12"
+SETX PATH "%PATH%;%PROGRAMFILES%\Java\jdk-11.0.12\bin"
+SETX JAVA_HOME "%PROGRAMFILES%\Java\jdk-11.0.12"
 goto varok
 
 :varerro
