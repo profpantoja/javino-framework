@@ -38,7 +38,7 @@ IF "%choice%"=="S" (
 
 :eclipse
 echo Iniciando o Download do Eclipse
-bitsadmin /transfer "Download" /download /priority FOREGROUND https://turing.pro.br/kadupantoja/t00ls/javino/W10/eclipse-inst-jre-win64.exe %homedrive%%homepath%\Javino\eclipse.exe
+IF NOT EXIST %homedrive%%homepath%\Javino\eclipse.exe bitsadmin /transfer "Eclipse" /download /priority HIGH http://javino.turing.pro.br/t00ls/W10/eclipse-inst-jre-win64.exe %homedrive%%homepath%\Javino\eclipse.exe
 echo.
 timeout 2 > NUL
 echo Download concluido, iniciando o instalador. Siga as orientacoes do instalador.
@@ -62,7 +62,7 @@ IF "%choice%"=="S" (
 
 :jdk
 echo Iniciando o Download do Java JDK 11
-bitsadmin /transfer "Download" /download /priority FOREGROUND https://turing.pro.br/kadupantoja/t00ls/javino/W10/jdk-11.0.12_windows-x64_bin.exe %homedrive%%homepath%\Javino\jdk11.exe
+IF NOT EXIST %homedrive%%homepath%\Javino\jdk11.exe bitsadmin /transfer "JDK-11" /download /priority HIGH http://javino.turing.pro.br/t00ls/W10/jdk-11.0.12_windows-x64_bin.exe %homedrive%%homepath%\Javino\jdk11.exe
 echo.
 timeout 2 > NUL
 echo Download concluido, iniciando o instalador. Siga as orientacoes do instalador.
@@ -105,7 +105,7 @@ IF "%choice%"=="S" (
 
 :python
 echo Iniciando o Download do Python 3
-bitsadmin /transfer "Download" /download /priority FOREGROUND https://turing.pro.br/kadupantoja/t00ls/javino/W10/python-3.10.0-amd64.exe %homedrive%%homepath%\Javino\python3.exe
+IF NOT EXIST %homedrive%%homepath%\Javino\python3.exe bitsadmin /transfer "Python" /download /priority HIGH http://javino.turing.pro.br/t00ls/W10/python-3.10.0-amd64.exe %homedrive%%homepath%\Javino\python3.exe
 echo.
 timeout 2 > NUL
 echo Download concluido, iniciando o instalador. Siga as orientacoes do instalador.
