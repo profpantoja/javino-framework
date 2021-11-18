@@ -30,7 +30,7 @@ public class PythonCommunication {
     private static final String PYTHON_DEFAULT_PATH_OS_LINUX = "/usr/bin";
 
     /** Python executable file name on the Windows operating system. */
-    private static final String PYTHON_FILE_NAME_OS_LINUX = "/python";
+    private static final String PYTHON_FILE_NAME_OS_LINUX = "/python3";
 
     /** Dot. */
     private static final String DOT = ".";
