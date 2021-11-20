@@ -21,12 +21,14 @@ IF "%choice%"=="S" (
 MD %HOMEDRIVE%%HOMEPATH%\javino
 CD %HOMEDRIVE%%HOMEPATH%\javino
 
-IF NOT EXIST %homedrive%%homepath%\javino\javino-dependences.zip bitsadmin /transfer Javino_DEPS /download /priority HIGH https://turing.pro.br/kadupantoja/t00ls/javino-dependences.zip %homedrive%%homepath%\javino\javino-dependences.zip
-IF NOT EXIST %homedrive%%homepath%\javino\7z.exe bitsadmin /transfer 7Zip /download /priority HIGH https://turing.pro.br/kadupantoja/t00ls/7z.exe %homedrive%%homepath%\javino\7z.exe
+IF NOT EXIST %homedrive%%homepath%\javino\javino-dependences.zip bitsadmin /transfer Javino_DEPS /download /priority HIGH http://javino.turing.pro.br/t00ls/W10/x86/javino-dependences.zip %homedrive%%homepath%\javino\javino-dependences.zip
+IF NOT EXIST %homedrive%%homepath%\javino\7z.exe bitsadmin /transfer 7Zip /download /priority HIGH http://javino.turing.pro.br/t00ls/W10/x86/7z.exe %homedrive%%homepath%\javino\7z.exe
 
 7z.exe x javino-dependences.zip
 
-SETX JAVINO_DEPS "%HOMEDRIVE%%HOMEPATH%\javino\javino-dependences\"
+SETX JAVINO_DEPS %HOMEDRIVE%%HOMEPATH%\javino\javino-dependences\
+
+DEL 7z.exe
 
 echo.
 echo Script de instalacao de ambiente do Javino para Windows
