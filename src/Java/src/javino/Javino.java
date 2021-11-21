@@ -264,14 +264,13 @@ public class Javino {
 
 	private boolean preamble(char[] preArrayMsg) {
 		try {
-			char p1 = preArrayMsg[0];
-			char p2 = preArrayMsg[1];
-			char p3 = preArrayMsg[2];
-			char p4 = preArrayMsg[3];
-			if ((p1 == 'f') && (p2 == 'f') && (p3 == 'f') && (p4 == 'e')
-					&& (this.monitorMsg(Base16.getByElement(String.valueOf(preArrayMsg[5])).getIntValue(),
-					Base16.getByElement(String.valueOf(preArrayMsg[4])).getIntValue(),
-					preArrayMsg.length))) {
+			String dstMsg = String.valueOf(preArrayMsg[0])+String.valueOf(preArrayMsg[1])+String.valueOf(preArrayMsg[2])+String.valueOf(preArrayMsg[3]);
+			String srcMsg = String.valueOf(preArrayMsg[4])+String.valueOf(preArrayMsg[5])+String.valueOf(preArrayMsg[6])+String.valueOf(preArrayMsg[7]);
+			Integer sizeMsg = Base64.getMsgSize(preArrayMsg[8],preArrayMsg[9]);
+			Integer sizeArray = preArrayMsg.length-10;		
+			
+
+			if((dstMsg.equals("++++"))&&(sizeArray==sizeMsg)) {
 				setFinalMsg(Conversion.charToString(preArrayMsg, preArrayMsg.length));
 				return true;
 			} else {
@@ -284,6 +283,7 @@ public class Javino {
 			}
 		} catch (Exception ex) {
 			System.out.println("[JAVINO] Invalid message.");
+			System.out.println(preArrayMsg);
 			ex.printStackTrace();
 			return false;
 		}
@@ -348,9 +348,11 @@ public class Javino {
 			System.out.println("[JAVINO] Using version " + JavinoConstants.VERSION + " CEFET/RJ, Brazil");
 			System.out.println("\tTo use Javino, look for the User Manual at http://javino.sf.net");
 			System.out.println("For more information try: \n\t java -jar javino.jar --help");
-			
+			/*
 			Javino j2 = new Javino();
-			j2.sendCommand("COM6","Hello Arduino!");
+			if(j2.requestData("COM6","Ping")) {
+				System.out.println(j2.getData());
+			}*/
 
 			// ex.printStackTrace();
 		}

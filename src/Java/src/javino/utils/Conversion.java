@@ -15,10 +15,10 @@ public class Conversion {
      * @return {@code #String} Vetor convertido para String.
      */
     public static String charToString(char in[], int sizein) {
-        int newsize = sizein - 6;
+        int newsize = sizein - 10;
         char[] output = new char[newsize];
         int cont = 0;
-        for (int i = 6; i < sizein; i++) {
+        for (int i = 10; i < sizein; i++) {
             output[cont] = in[i];
             cont++;
         }

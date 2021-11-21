@@ -269,6 +269,86 @@ public enum Base64 {
         }
         throw new BaseConversionException(msgInBits, Base64.BASE_NAME);
     }
+    
+    
+    public static int getMsgSize(char v1, char v2) {
+    	
+    	
+    	return (B64toInt(v1)*64)+B64toInt(v2)/Byte.SIZE;
+    	
+    }
+    
+    private static int B64toInt(char valueIN) {
+        int out = 0;
+        switch (valueIN) {
+        case 'A': out=0; break;
+        case 'B': out=1; break;
+        case 'C': out=2; break;
+        case 'D': out=3; break;
+        case 'E': out=4; break;
+        case 'F': out=5; break;
+        case 'G': out=6; break;
+        case 'H': out=7; break;
+        case 'I': out=8; break;
+        case 'J': out=9; break;
+        case 'K': out=10; break;
+        case 'L': out=11; break;
+        case 'M': out=12; break;
+        case 'N': out=13; break;
+        case 'O': out=14; break;
+        case 'P': out=15; break;
+        case 'Q': out=16; break;
+        case 'R': out=17; break;
+        case 'S': out=18; break;
+        case 'T': out=19; break;
+        case 'U': out=20; break;
+        case 'V': out=21; break;
+        case 'W': out=22; break;
+        case 'X': out=23; break;
+        case 'Y': out=24; break;
+        case 'Z': out=25; break;
+        case 'a': out=26; break;
+        case 'b': out=27; break;
+        case 'c': out=28; break;
+        case 'd': out=29; break;
+        case 'e': out=30; break;
+        case 'f': out=31; break;
+        case 'g': out=32; break;
+        case 'h': out=33; break;
+        case 'i': out=34; break;
+        case 'j': out=35; break;
+        case 'k': out=36; break;
+        case 'l': out=37; break;
+        case 'm': out=38; break;
+        case 'n': out=39; break;
+        case 'o': out=40; break;
+        case 'p': out=41; break;
+        case 'q': out=42; break;
+        case 'r': out=43; break;
+        case 's': out=44; break;
+        case 't': out=45; break;
+        case 'u': out=46; break;
+        case 'v': out=47; break;
+        case 'w': out=48; break;
+        case 'x': out=49; break;
+        case 'y': out=50; break;
+        case 'z': out=51; break;
+        case '0': out=52; break;
+        case '1': out=53; break;
+        case '2': out=54; break;
+        case '3': out=55; break;
+        case '4': out=56; break;
+        case '5': out=57; break;
+        case '6': out=58; break;
+        case '7': out=59; break;
+        case '8': out=60; break;
+        case '9': out=61; break;
+        case '+': out=62; break;
+        case '/': out=63; break;
+        }
+        return out;
+   }
+    
 
     /**
      * @return {@link #element}
@@ -302,4 +382,6 @@ public enum Base64 {
     public String toString() {
         return this.element;
     }
+    
+
 }
