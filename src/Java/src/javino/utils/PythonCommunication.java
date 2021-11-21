@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /** Utility class for communicating with Python. */
 public class PythonCommunication {
@@ -21,7 +23,7 @@ public class PythonCommunication {
     private static final String OPERATION_SYSTEM_NAME_STRING_PROPERTY = "os.name";
 
     /** Standard Python path installed on the Windows operating system. */
-    private static final String PYTHON_DEFAULT_PATH_OS_WINDOWS = "C:\\Python\\Python310";
+    private static final String JAVINO_ENVIRONMENT_VAR_NAME = "JAVINO";
 
     /** Python executable file name on the Windows operating system. */
     private static final String PYTHON_FILE_NAME_OS_WINDOWS = "\\python.exe";
@@ -71,7 +73,13 @@ public class PythonCommunication {
      */
     private static String getPath(OperationalSystem os) {
         if (OperationalSystem.WINDOWS.equals(os)) {
-            return PYTHON_DEFAULT_PATH_OS_WINDOWS + PYTHON_FILE_NAME_OS_WINDOWS;
+        	if(System.getenv(JAVINO_ENVIRONMENT_VAR_NAME)==null) {
+        		System.out.println("\n[ATENÇÃO] Realize a instalação das dependências do Javino para Windows. \n Consulte: http://javino.turing.pro.br/t00ls/W10/x86/javino-inst-windows.exe");
+        		System.exit(1);
+        		return null;
+        	}else {
+        		return System.getenv(JAVINO_ENVIRONMENT_VAR_NAME) + PYTHON_FILE_NAME_OS_WINDOWS;
+        	}
         } else {
             return PYTHON_DEFAULT_PATH_OS_LINUX + PYTHON_FILE_NAME_OS_LINUX;
         }
@@ -93,7 +101,7 @@ public class PythonCommunication {
 
     /**
      * Performs the creation of the javython.py file.
-     */
+     
     private static void createPythonFile() {
         try {
             FileWriter file = new FileWriter(JavinoConstants.PYTHON_FILE_NAME);
@@ -137,7 +145,7 @@ public class PythonCommunication {
         unlock();
         System.out.println("[JAVINO] Hello, You are using version " + JavinoConstants.VERSION + " - CEFET/RJ, Brazil");
         final String path = PythonCommunication.getPath(whichOperationalSystem());
-        createPythonFile();
+        //createPythonFile();
         return path;
     }
 
@@ -150,7 +158,7 @@ public class PythonCommunication {
         unlock();
         System.out.println("[JAVINO] Hello, You are using version " + JavinoConstants.VERSION + " - CEFET/RJ, Brazil");
         final String path = getPath(whichOperationalSystem(), specificPath);
-        createPythonFile();
+        //createPythonFile();
         return path;
     }
 

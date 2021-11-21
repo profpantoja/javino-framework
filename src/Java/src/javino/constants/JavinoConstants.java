@@ -4,7 +4,7 @@ package javino.constants;
 public class JavinoConstants {
 
     /** Nome do arquivo do python criado na comunicação entre o Java e o Arduino. */
-    public static final String PYTHON_FILE_NAME = "javython.py";
+    public static final String PYTHON_FILE_NAME = System.getenv("JAVINO")+"\\javino.py";
 
     /** Versão atual do Javino. */
     public static final String VERSION = "2.0";

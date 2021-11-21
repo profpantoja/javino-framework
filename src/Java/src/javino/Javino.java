@@ -74,7 +74,7 @@ public class Javino {
 		boolean result;
 		if (PythonCommunication.portLocked(port)) {
 			result = false;
-		} else {
+		}else {
 			PythonCommunication.lockPort(true, port);
 			String[] command = new String[5];
 			command[0] = this.pythonPlataform;
@@ -349,8 +349,8 @@ public class Javino {
 			System.out.println("\tTo use Javino, look for the User Manual at http://javino.sf.net");
 			System.out.println("For more information try: \n\t java -jar javino.jar --help");
 			
-			/*Javino j2 = new Javino();
-			j2.sendCommand("COM6","Hello Arduino!");*/
+			Javino j2 = new Javino();
+			j2.sendCommand("COM6","Hello Arduino!");
 
 			// ex.printStackTrace();
 		}
