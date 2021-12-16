@@ -15,11 +15,15 @@ import java.io.InputStreamReader;
 /** Classe Principal do Javino. */
 public class Javino {
 
-	/** Caminho completo do arquivo executável do Python. */
+	/** Caminho completo do arquivo executï¿½vel do Python. */
 	private final String pythonPlataform;
 
 	/** Mensagem final. */
 	private String finalMsg = null;
+	
+	private String dstMsg;
+	
+	private String srcMsg;
 
 	/**
 	 * Construtor.
@@ -31,7 +35,7 @@ public class Javino {
 	/**
 	 * Construtor.
 	 *
-	 * @param pathPython Caminho específico do arquivo executável do Python.
+	 * @param pathPython Caminho especï¿½fico do arquivo executï¿½vel do Python.
 	 */
 	public Javino(String pathPython) {
 		this.pythonPlataform = PythonCommunication.load(pathPython);
@@ -40,8 +44,8 @@ public class Javino {
 	public String decodeDiffusion(String message) {
 		String content = new String();
 		/*
-		 * Para implementar a difusão. Caso mude todo o Javino para 64, bastaria chamar
-		 * a decodificação modificada novamente. Retornaríamos só sender e o content
+		 * Para implementar a difusï¿½o. Caso mude todo o Javino para 64, bastaria chamar
+		 * a decodificaï¿½ï¿½o modificada novamente. Retornarï¿½amos sï¿½ sender e o content
 		 */
 		return content;
 	}
@@ -261,11 +265,27 @@ public class Javino {
 	private void setFinalMsg(String s_msg) {
 		this.finalMsg = s_msg;
 	}
+	
+	public String getDstMsg() {
+		return dstMsg;
+	}
+
+	public void setDstMsg(String dstMsg) {
+		this.dstMsg = dstMsg;
+	}
+
+	public String getSrcMsg() {
+		return srcMsg;
+	}
+
+	public void setSrcMsg(String srcMsg) {
+		this.srcMsg = srcMsg;
+	}
 
 	private boolean preamble(char[] preArrayMsg) {
 		try {
-			String dstMsg = String.valueOf(preArrayMsg[0])+String.valueOf(preArrayMsg[1])+String.valueOf(preArrayMsg[2])+String.valueOf(preArrayMsg[3]);
-			String srcMsg = String.valueOf(preArrayMsg[4])+String.valueOf(preArrayMsg[5])+String.valueOf(preArrayMsg[6])+String.valueOf(preArrayMsg[7]);
+			this.dstMsg = String.valueOf(preArrayMsg[0])+String.valueOf(preArrayMsg[1])+String.valueOf(preArrayMsg[2])+String.valueOf(preArrayMsg[3]);
+			this.srcMsg = String.valueOf(preArrayMsg[4])+String.valueOf(preArrayMsg[5])+String.valueOf(preArrayMsg[6])+String.valueOf(preArrayMsg[7]);
 			Integer sizeMsg = Base64.getMsgSize(preArrayMsg[8],preArrayMsg[9]);
 			Integer sizeArray = preArrayMsg.length-10;		
 			
@@ -348,11 +368,11 @@ public class Javino {
 			System.out.println("[JAVINO] Using version " + JavinoConstants.VERSION + " CEFET/RJ, Brazil");
 			System.out.println("\tTo use Javino, look for the User Manual at http://javino.sf.net");
 			System.out.println("For more information try: \n\t java -jar javino.jar --help");
-			/*
+
 			Javino j2 = new Javino();
 			if(j2.requestData("COM6","Ping")) {
 				System.out.println(j2.getData());
-			}*/
+			}
 
 			// ex.printStackTrace();
 		}
