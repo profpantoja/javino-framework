@@ -1,7 +1,6 @@
 package javino;
 
 import javino.exception.BaseConversionException;
-import javino.enums.Base16;
 import javino.enums.Base64;
 import javino.enums.OperationMode;
 import javino.constants.JavinoConstants;
@@ -15,7 +14,7 @@ import java.io.InputStreamReader;
 /** Classe Principal do Javino. */
 public class Javino {
 
-	/** Caminho completo do arquivo executável do Python. */
+	/** Caminho completo do arquivo executï¿½vel do Python. */
 	private final String pythonPlataform;
 
 	/** Mensagem final. */
@@ -31,7 +30,7 @@ public class Javino {
 	/**
 	 * Construtor.
 	 *
-	 * @param pathPython Caminho específico do arquivo executável do Python.
+	 * @param pathPython Caminho especï¿½fico do arquivo executï¿½vel do Python.
 	 */
 	public Javino(String pathPython) {
 		this.pythonPlataform = PythonCommunication.load(pathPython);
@@ -40,33 +39,36 @@ public class Javino {
 	public String decodeDiffusion(String message) {
 		String content = new String();
 		/*
-		 * Para implementar a difusão. Caso mude todo o Javino para 64, bastaria chamar
-		 * a decodificação modificada novamente. Retornaríamos só sender e o content
+		 * Para implementar a difusï¿½o. Caso mude todo o Javino para 64, bastaria chamar
+		 * a decodificaï¿½ï¿½o modificada novamente. Retornarï¿½amos sï¿½ sender e o content
 		 */
 		return content;
 	}
 
-	public boolean diffuse(String port, String receiver, String content) {
+	public boolean diffuse(String port, String sender, String receiver, String content) {
 		if (port != null) {
-			if (receiver != null) {
-				if (content != null) {
-					String diffusionMessage = "";
-					try {
-						diffusionMessage = receiver + Base64.getMsgSize(content.length()) + content;
-					} catch (BaseConversionException e) {
-						e.printStackTrace();
-					}
-					if (diffusionMessage.length() > JavinoConstants.MESSAGE_MIN_SIZE)
-						return this.sendMessage(port, diffusionMessage);
-					else
-						System.out.println("[JAVINO] The message must have at most 64 characters "
-								+ "including sender, receiver, and the content.");
+			if (sender != null) {
+				if (receiver != null) {
+					if (content != null) {
+						String diffusionMessage = "";
+						try {
+							diffusionMessage = sender + receiver + Base64.getMsgSize(content.length()) + content;
+						} catch (BaseConversionException e) {
+							e.printStackTrace();
+						}
+						if (diffusionMessage.length() > JavinoConstants.MESSAGE_MIN_SIZE)
+							return this.sendMessage(port, diffusionMessage);
+						else
+							System.out.println("[JAVINO] The message must have at most 64 characters "
+									+ "including sender, receiver, and the content.");
+					} else
+						System.out.println("[JAVINO] The message content cannot be null!");
 				} else
-					System.out.println("[JAVINO] The message content cannot be null!");
+					System.out.println("[JAVINO] The receiver cannot be null!");
 			} else
-				System.out.println("[JAVINO] The receiver cannot be null!");
+				System.out.println("[JAVINO] The port cannot be null!");
 		} else
-			System.out.println("[JAVINO] The port cannot be null!");
+			System.out.println("[JAVINO] The sender cannot be null!");
 		return false;
 	}
 
@@ -74,7 +76,7 @@ public class Javino {
 		boolean result;
 		if (PythonCommunication.portLocked(port)) {
 			result = false;
-		}else {
+		} else {
 			PythonCommunication.lockPort(true, port);
 			String[] command = new String[5];
 			command[0] = this.pythonPlataform;
@@ -173,7 +175,7 @@ public class Javino {
 				p.waitFor();
 				BufferedReader array = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				if (p.exitValue() == 0) {
-					result = setArryMsg(array);
+					result = this.setArrayMsg(array);
 					PythonCommunication.lockPort(false, PORT);
 				} else {
 					String line;
@@ -215,7 +217,7 @@ public class Javino {
 				p.waitFor();
 				BufferedReader array = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				if (p.exitValue() == 0) {
-					result = setArryMsg(array);
+					result = this.setArrayMsg(array);
 					PythonCommunication.lockPort(false, PORT);
 				} else {
 					String line = null;
@@ -234,6 +236,7 @@ public class Javino {
 				result = false;
 				PythonCommunication.lockPort(false, PORT);
 			}
+
 		}
 		return result;
 	}
@@ -244,7 +247,7 @@ public class Javino {
 		return output;
 	}
 
-	private boolean setArryMsg(BufferedReader reader) {
+	private boolean setArrayMsg(BufferedReader reader) {
 		String line;
 		StringBuilder out = new StringBuilder();
 		try {
@@ -264,14 +267,15 @@ public class Javino {
 
 	private boolean preamble(char[] preArrayMsg) {
 		try {
-			String dstMsg = String.valueOf(preArrayMsg[0])+String.valueOf(preArrayMsg[1])+String.valueOf(preArrayMsg[2])+String.valueOf(preArrayMsg[3]);
-			String srcMsg = String.valueOf(preArrayMsg[4])+String.valueOf(preArrayMsg[5])+String.valueOf(preArrayMsg[6])+String.valueOf(preArrayMsg[7]);
-			Integer sizeMsg = Base64.getMsgSize(preArrayMsg[8],preArrayMsg[9]);
-			Integer sizeArray = preArrayMsg.length-10;		
-			
+			String dstMsg = String.valueOf(preArrayMsg[0]) + String.valueOf(preArrayMsg[1])
+					+ String.valueOf(preArrayMsg[2]) + String.valueOf(preArrayMsg[3]);
+			String srcMsg = String.valueOf(preArrayMsg[4]) + String.valueOf(preArrayMsg[5])
+					+ String.valueOf(preArrayMsg[6]) + String.valueOf(preArrayMsg[7]);
+			Integer sizeMsg = Base64.getMsgSize(preArrayMsg[8], preArrayMsg[9]);
+			Integer sizeArray = preArrayMsg.length - 10;
 
-			if((dstMsg.equals("++++"))&&(sizeArray==sizeMsg)) {
-				setFinalMsg(Conversion.charToString(preArrayMsg, preArrayMsg.length));
+			if ((dstMsg.equals("++++")) && (sizeArray == sizeMsg)) {
+				this.setFinalMsg(Conversion.charToString(preArrayMsg, preArrayMsg.length));
 				return true;
 			} else {
 				char[] newArrayMsg;
@@ -349,10 +353,11 @@ public class Javino {
 			System.out.println("\tTo use Javino, look for the User Manual at http://javino.sf.net");
 			System.out.println("For more information try: \n\t java -jar javino.jar --help");
 			/*
-			Javino j2 = new Javino();
-			if(j2.requestData("COM6","Ping")) {
-				System.out.println(j2.getData());
-			}*/
+			 * Javino j2 = new Javino();
+			 * if(j2.requestData("COM6","Ping")) {
+			 * System.out.println(j2.getData());
+			 * }
+			 */
 
 			// ex.printStackTrace();
 		}
