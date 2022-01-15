@@ -373,10 +373,10 @@ public class Javino {
 			System.out.println("\tTo use Javino, look for the User Manual at http://javino.sf.net");
 			System.out.println("For more information try: \n\t java -jar javino.jar --help");
 
-			 * Javino j2 = new Javino();
-			 * if(j2.requestData("COM6","Ping")) {
-			 * System.out.println(j2.getData());
-			 * }
+			// Javino j2 = new Javino();
+			// if(j2.requestData("COM6","Ping")) {
+			// System.out.println(j2.getData());
+			// }
 
 
 			// ex.printStackTrace();
