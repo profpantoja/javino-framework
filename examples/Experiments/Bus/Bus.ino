@@ -62,23 +62,22 @@ void loop(){
   bus(Stop);
   if(wait==false){
      strongAlert();
-     helpRF();    
+     j.sendMsgRF("tell;accident");  
+     delay(250);
   }else{
     lightAlert();
+    delay(750);
   }
  }
 
  if(j.availableMsgRF()){                 
     if(j.getMsg()=="tell;helpComing");
-    wait=true;
+      wait=true;
+      delay(50);
+      j.sendMsgRF("tell;waiting");
   }
 }
 
-
-void helpRF(){ 
-  j.sendMsgRF("tell;accident");
-  delay(500);
-}
 
 void strongAlert(){
   buzzer(true);
@@ -103,10 +102,8 @@ boolean isNight(){
   int intLDR = analogRead(LDRPin);
   if(intLDR<384){
     return true;
-    //light(false);
   }else{
     return false;
-    //light(true);
   }
 }
 
