@@ -1,0 +1,13 @@
+MAS wesaac21Javino02 {
+
+	infrastructure: Centralised
+
+	agents:
+		cbv2 agentArchClass Diffuser;
+		//cbv1 agentArchClass Argo;
+		//brok agentArchClass Argo;
+		//none agentArchClass Argo;
+
+	aslSourcePath:
+		"src/asl";
+}
