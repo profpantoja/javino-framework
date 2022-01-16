@@ -40,16 +40,15 @@ public class Javino {
 		this.pythonPlataform = PythonCommunication.load(pathPython);
 	}
 
-	public String decodeDiffusion(String message) {
+	public String decodeDiffusion(String port, String src, String message) {
 		String content = new String();
-		/*
-		 * Para implementar a difus�o. Caso mude todo o Javino para 64, bastaria chamar
-		 * a decodifica��o modificada novamente. Retornar�amos s� sender e o content
-		 */
+		if (this.requestData(port, message)) {
+			content = this.srcMsg + ";" + this.dstMsg + ";" + this.getData();
+		}
 		return content;
 	}
 
-	public boolean diffuse(String port, String sender, String receiver, String content) {
+	public boolean diffuse(String port, String receiver, String sender, String content) {
 		if (port != null) {
 			if (sender != null) {
 				if (receiver != null) {
@@ -60,11 +59,11 @@ public class Javino {
 						} catch (BaseConversionException e) {
 							e.printStackTrace();
 						}
-						if (diffusionMessage.length() > JavinoConstants.MESSAGE_MIN_SIZE)
+						//if (diffusionMessage.length() > JavinoConstants.MESSAGE_MIN_SIZE)
 							return this.sendMessage(port, diffusionMessage);
-						else
-							System.out.println("[JAVINO] The message must have at most 64 characters "
-									+ "including sender, receiver, and the content.");
+						//else
+						//	System.out.println("[JAVINO] The message must have at most 64 characters "
+						//			+ "including sender, receiver, and the content.");
 					} else
 						System.out.println("[JAVINO] The message content cannot be null!");
 				} else
@@ -214,6 +213,7 @@ public class Javino {
 			command[2] = OperationMode.REQUEST.getName();
 			command[3] = PORT;
 			command[4] = Conversion.prepareToSend(MSG);
+			System.out.println("Command: "+command[4]);
 			ProcessBuilder pBuilder = new ProcessBuilder(command);
 			pBuilder.redirectErrorStream(true);
 			try {
@@ -287,24 +287,28 @@ public class Javino {
 
 	private boolean preamble(char[] preArrayMsg) {
 		try {
-			this.dstMsg = String.valueOf(preArrayMsg[0]) + String.valueOf(preArrayMsg[1])
-					+ String.valueOf(preArrayMsg[2]) + String.valueOf(preArrayMsg[3]);
-			this.srcMsg = String.valueOf(preArrayMsg[4]) + String.valueOf(preArrayMsg[5])
-					+ String.valueOf(preArrayMsg[6]) + String.valueOf(preArrayMsg[7]);
-			Integer sizeMsg = Base64.getMsgSize(preArrayMsg[8], preArrayMsg[9]);
-			Integer sizeArray = preArrayMsg.length - 10;
-
-			if ((dstMsg.equals("++++")) && (sizeArray == sizeMsg)) {
-				this.setFinalMsg(Conversion.charToString(preArrayMsg, preArrayMsg.length));
-				return true;
-			} else {
-				char[] newArrayMsg;
-				newArrayMsg = new char[(preArrayMsg.length - 1)];
-				for (int cont = 0; cont < newArrayMsg.length; cont++) {
-					newArrayMsg[cont] = preArrayMsg[cont + 1];
+			if(preArrayMsg != null && preArrayMsg.length > 0) {
+				this.dstMsg = String.valueOf(preArrayMsg[0]) + String.valueOf(preArrayMsg[1])
+						+ String.valueOf(preArrayMsg[2]) + String.valueOf(preArrayMsg[3]);
+				this.srcMsg = String.valueOf(preArrayMsg[4]) + String.valueOf(preArrayMsg[5])
+						+ String.valueOf(preArrayMsg[6]) + String.valueOf(preArrayMsg[7]);
+				Integer sizeMsg = Base64.getMsgSize(preArrayMsg[8], preArrayMsg[9]);
+				Integer sizeArray = preArrayMsg.length - 10;
+				
+				if (this.dstMsg.equals("++++") || this.dstMsg.equals("////")) {
+					this.setFinalMsg(Conversion.charToString(preArrayMsg, preArrayMsg.length));
+					return true;
+				} else {
+					char[] newArrayMsg;
+					newArrayMsg = new char[(preArrayMsg.length - 1)];
+					for (int cont = 0; cont < newArrayMsg.length; cont++) {
+						newArrayMsg[cont] = preArrayMsg[cont + 1];
+					}
+					//return this.preamble(newArrayMsg);
+					return false;
 				}
-				return this.preamble(newArrayMsg);
 			}
+			return false;
 		} catch (Exception ex) {
 			System.out.println("[JAVINO] Invalid message.");
 			System.out.println(preArrayMsg);

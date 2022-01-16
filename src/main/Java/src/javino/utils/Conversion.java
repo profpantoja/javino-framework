@@ -34,7 +34,7 @@ public class Conversion {
      */
     public static String prepareToSend(String msg) {   	
     	try {
-			msg = "++++aaaa"+Base64.getMsgSize(msg.length())+msg;
+			msg = "++++POLI"+Base64.getMsgSize(msg.length())+msg;
 		} catch (BaseConversionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
