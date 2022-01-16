@@ -33,7 +33,11 @@ class Javino
 	void setAlias(String strAlias);
 	String getId();
 	void setCipherKey(String strKey);
+	String getBufferRF();
+	void buffer2USB();
   private:
+	String _bufferRF;
+	boolean _bRF;
 	int _x;
 	int _d;
 	int _n;
@@ -67,5 +71,7 @@ class Javino
 	String getMyGroup(int i);
 	String sizeMsgB64(int x);
 	boolean broadcast();
+	void setBufferRF(String msgRF);
+	boolean inBufferRF();
 };
 #endif

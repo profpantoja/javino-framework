@@ -131,6 +131,7 @@ boolean Javino::preamble(){
 
 void Javino::enableRF(int pinTX, int pinRX){
 	_rf = true;
+	_bRF = false;
 	vw_set_ptt_inverted(true);
 	pinMode(pinTX, OUTPUT);
 	vw_set_tx_pin(pinTX);
@@ -138,6 +139,7 @@ void Javino::enableRF(int pinTX, int pinRX){
 	vw_set_rx_pin(pinRX);
 	vw_setup(2048);
 	vw_rx_start(); 
+	
 }
 
 void Javino::listeningRF(){
@@ -195,6 +197,9 @@ boolean Javino::preambleRF(String strHeader){
 
 void Javino::treatMsgRF(){
 	if(_x==((_d-10)*8)){
+		setBufferRF(_finalMsg.substring(0,_d));
+		_bRF = true;
+		
 		_dstMsg=_finalMsg.substring(0,4);
 		_srcMsg=_finalMsg.substring(4,8);
 		_finalMsg=_finalMsg.substring(10,_d);
@@ -207,6 +212,26 @@ void Javino::treatMsgRF(){
 
 	}else{
 		_msg=false;
+	}
+}
+
+boolean Javino::inBufferRF(){
+	return _bRF;
+}
+
+String Javino::getBufferRF(){
+	_bRF = false;
+	return _bufferRF;
+}
+
+void Javino::setBufferRF(String msgRF){
+	_bRF = true;
+	_bufferRF = msgRF;
+}
+
+void Javino::buffer2USB(){
+	if(inBufferRF()){
+		Serial.println(getBufferRF());
 	}
 }
 

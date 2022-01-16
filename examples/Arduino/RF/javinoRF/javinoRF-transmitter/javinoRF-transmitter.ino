@@ -16,11 +16,11 @@ void setup() {
 
 void loop(){
  
- j.sendMsgRF("broadcast message");                     /* enviando mensagem broadcast*/
- delay(500);
- j.sendMsgRF("//CA","multicast message");       /* enviando mensagem multicast*/
- delay(500);
- j.sendMsgRF("CAFE","unicast message");       /* enviando mensagem unicast*/
- delay(500);
+ //j.sendMsgRF("broadcast message");                     /* enviando mensagem broadcast*/
+ //delay(500);
+ //j.sendMsgRF("//CA","multicast message");       /* enviando mensagem multicast*/
+ //delay(500);
+ j.sendMsgRF("ROMA","tell;helpComing");       /* enviando mensagem unicast*/
+ //delay(50);
   
 }

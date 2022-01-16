@@ -76,7 +76,7 @@ void loop(){
 
 
 void helpRF(){ 
-  j.sendMsgRF("ROMA","tell;helpComing");
+  j.sendMsgRF("tell;accident");
   delay(500);
 }
 

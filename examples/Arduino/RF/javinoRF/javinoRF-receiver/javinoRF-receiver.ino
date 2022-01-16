@@ -5,7 +5,7 @@
 Javino j;
 
 void setup() {
-  j.setId("CAFE");                          /*parâmetros de configuração*/
+  j.setId("ROMA");                          /*parâmetros de configuração*/
   j.enableRF(TXPin,RXPin);
   j.setCipherKey("0123456789abcdef");
 
