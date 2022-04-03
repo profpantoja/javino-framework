@@ -18,8 +18,8 @@ void setup()
     pinMode(13,OUTPUT);
     // Initialise the IO and ISR
     vw_set_rx_pin(11);
-    vw_set_ptt_inverted(true); // Required for DR3100
-    vw_setup(2048); // Bits per sec
+   // vw_set_ptt_inverted(true); // Required for DR3100
+    vw_setup(4096); // Bits per sec
 
     vw_rx_start();       // Start the receiver PLL running
 }

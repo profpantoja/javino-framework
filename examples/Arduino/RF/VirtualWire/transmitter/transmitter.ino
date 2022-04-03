@@ -11,6 +11,11 @@
 
 #include <VirtualWire.h>
 
+
+#define TXPin       12                                /*Pino Transmissor*/
+#define RXPin       11        
+
+
 void setup()
 {
     Serial.begin(9600);   // Debugging only
@@ -18,8 +23,8 @@ void setup()
     pinMode(13,OUTPUT);
 
     // Initialise the IO and ISR
-    vw_set_tx_pin(12);
-    vw_set_ptt_inverted(true); // Required for DR3100
+    vw_set_tx_pin(TXPin);
+  //  vw_set_ptt_inverted(true); // Required for DR3100
     vw_setup(4096); // Bits per sec
 }
 
