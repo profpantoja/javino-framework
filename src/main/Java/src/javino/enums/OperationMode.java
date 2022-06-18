@@ -10,7 +10,10 @@ public enum OperationMode {
     COMMAND("command"),
 
     /** Operação de requisição. */
-    REQUEST("request");
+    REQUEST("request"),
+	
+	/** Operação de requisição RF. */
+    REQUEST_RF("requestRF");
 
     /** Nome da operação. */
     private String name;

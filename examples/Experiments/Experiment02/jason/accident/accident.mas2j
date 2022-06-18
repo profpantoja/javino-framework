@@ -1,0 +1,10 @@
+MAS accident {
+
+	infrastructure: Centralised
+
+	agents:
+		brok agentArchClass Diffuser;
+
+	aslSourcePath:
+		"src/asl";
+}

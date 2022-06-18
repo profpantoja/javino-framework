@@ -12,9 +12,17 @@ try:
         comm.open
         comm.isOpen
         comm.write(bytes(MSG, 'utf-8'))
+        comm.readline().decode()
         comm.close
     elif (OP=='request'):
         comm = serial.Serial(PORT, '9600', timeout=3)
+        comm.open
+        comm.isOpen
+        comm.write(bytes(MSG, 'utf-8'))
+        print (comm.readline().decode())
+        comm.close
+    elif (OP=='requestRF'):
+        comm = serial.Serial(PORT, '9600', timeout=.3)
         comm.open
         comm.isOpen
         comm.write(bytes(MSG, 'utf-8'))

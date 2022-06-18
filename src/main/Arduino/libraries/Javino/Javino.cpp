@@ -231,7 +231,12 @@ void Javino::setBufferRF(String msgRF){
 
 void Javino::buffer2USB(){
 	if(inBufferRF()){
-		Serial.println(getBufferRF());
+		String bufferMsg = getBufferRF();
+		String msgCipher = bufferMsg.substring(10, bufferMsg.length());
+		String msgDecrypted = secV.decryptAES_CFB(msgCipher);
+		String size = sizeMsgB64(msgDecrypted.length()*8);
+		String finalMsgDecrypted = bufferMsg.substring(0,4)+bufferMsg.substring(4,8)+size+msgDecrypted;
+		Serial.println(finalMsgDecrypted);
 	}
 }
 

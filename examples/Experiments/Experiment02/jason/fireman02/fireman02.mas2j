@@ -1,0 +1,11 @@
+MAS fireman02 {
+
+	infrastructure: Centralised
+
+	agents:
+		//suppot;
+		cbv2 agentArchClass Diffuser;
+
+	aslSourcePath:
+		"src/asl";
+}

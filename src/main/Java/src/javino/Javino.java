@@ -23,6 +23,8 @@ public class Javino {
 	private String dstMsg;
 
 	private String srcMsg;
+	
+	private String myRFId;
 
 	/**
 	 * Construtor.
@@ -42,7 +44,7 @@ public class Javino {
 
 	public String decodeDiffusion(String port, String src, String message) {
 		String content = new String();
-		if (this.requestData(port, message)) {
+		if (this.requestRFData(port, message)) {
 			content = this.srcMsg + ";" + this.dstMsg + ";" + this.getData();
 		}
 		return content;
@@ -213,7 +215,49 @@ public class Javino {
 			command[2] = OperationMode.REQUEST.getName();
 			command[3] = PORT;
 			command[4] = Conversion.prepareToSend(MSG);
-			System.out.println("Command: "+command[4]);
+			ProcessBuilder pBuilder = new ProcessBuilder(command);
+			pBuilder.redirectErrorStream(true);
+			try {
+				Process p = pBuilder.start();
+				p.waitFor();
+				BufferedReader array = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				if (p.exitValue() == 0) {
+					result = this.setArrayMsg(array);
+					PythonCommunication.lockPort(false, PORT);
+				} else {
+					String line = null;
+					String output = "";
+					while ((line = array.readLine()) != null) {
+						output = output + line;
+					}
+					System.out.println("[JAVINO] Fatal error! [" + output + "]");
+					result = false;
+					PythonCommunication.lockPort(false, PORT);
+				}
+
+			} catch (IOException | InterruptedException e) {
+				System.out.println("[JAVINO] Error on listening!");
+				e.printStackTrace();
+				result = false;
+				PythonCommunication.lockPort(false, PORT);
+			}
+
+		}
+		return result;
+	}
+	
+	public boolean requestRFData(String PORT, String MSG) {
+		boolean result;
+		if (PythonCommunication.portLocked(PORT)) {
+			result = false;
+		} else {
+			PythonCommunication.lockPort(true, PORT);
+			String[] command = new String[5];
+			command[0] = this.pythonPlataform;
+			command[1] = JavinoConstants.PYTHON_FILE_NAME;
+			command[2] = OperationMode.REQUEST_RF.getName();
+			command[3] = PORT;
+			command[4] = Conversion.prepareToSend(MSG);
 			ProcessBuilder pBuilder = new ProcessBuilder(command);
 			pBuilder.redirectErrorStream(true);
 			try {
@@ -284,6 +328,10 @@ public class Javino {
 	public void setSrcMsg(String srcMsg) {
 		this.srcMsg = srcMsg;
 	}
+	
+	public void setMyRFId(String myRFId) {
+		this.myRFId = myRFId;
+	}
 
 	private boolean preamble(char[] preArrayMsg) {
 		try {
@@ -295,7 +343,7 @@ public class Javino {
 				Integer sizeMsg = Base64.getMsgSize(preArrayMsg[8], preArrayMsg[9]);
 				Integer sizeArray = preArrayMsg.length - 10;
 				
-				if (this.dstMsg.equals("++++") || this.dstMsg.equals("////")) {
+				if (this.dstMsg.equals("++++") || this.dstMsg.equals("////") || this.dstMsg.equals(this.myRFId)) {
 					this.setFinalMsg(Conversion.charToString(preArrayMsg, preArrayMsg.length));
 					return true;
 				} else {
